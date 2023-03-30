@@ -2,7 +2,7 @@
 
 Servidor da nossa aplicação. Tecnologias usadas:
 
-- Node (18.5.0 - LTS)
+- [Node (18.5.0 - LTS)](https://nodejs.org/en/download)
 - NPM (9.5.0)
 - ExpressJS
 - TypeScript
