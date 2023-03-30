@@ -2,8 +2,8 @@
 
 Servidor da nossa aplicação. Tecnologias usadas:
 
-- Node (17.5)
-- NPM (8.4)
+- Node (18.5.0 - LTS)
+- NPM (9.5.0)
 - ExpressJS
 - TypeScript
 - Prisma
