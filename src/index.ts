@@ -7,7 +7,8 @@ import { IncomingMessage, Server, ServerResponse } from 'http'
 dotenv.config()
 
 const app = express()
-app.use('/views', express.static(resolve(__dirname)))
+app.use('/views', express.static('views'))
+app.use('/public', express.static('public'))
 
 app.use(expressLayouts)
 app.set('layout', './layouts/layout')
