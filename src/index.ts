@@ -1,13 +1,21 @@
 import express from 'express'
 import * as dotenv from 'dotenv'
+import { resolve } from 'path'
+import expressLayouts from 'express-ejs-layouts'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 
 dotenv.config()
 
 const app = express()
+app.use('/views', express.static('views'))
+app.use('/public', express.static('public'))
+
+app.use(expressLayouts)
+app.set('layout', './layouts/layout')
+app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-    res.send('Olá mundo!')
+    res.render('index', { title: 'Home | Read Together'})
 })
 
 const port = Number(process.env.NODE_PORT) || 8080
