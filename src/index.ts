@@ -1,22 +1,25 @@
 import express from 'express'
 import * as dotenv from 'dotenv'
-import { resolve } from 'path'
 import expressLayouts from 'express-ejs-layouts'
 import { IncomingMessage, Server, ServerResponse } from 'http'
+import clubeRouter from './routes/clube'
+import renderCustomizado from './routes/Utils/renderCustomizado'
 
 dotenv.config()
 
 const app = express()
-app.use('/views', express.static('views'))
-app.use('/public', express.static('public'))
+app.use(express.static('views'))
+app.use(express.static('public'))
 
 app.use(expressLayouts)
-app.set('layout', './layouts/layout')
+app.set('layout', 'layouts/layout')
 app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home | Read Together'})
+    renderCustomizado(res, 'index', 'Home | Read Together')
 })
+
+app.use('/clube', clubeRouter)
 
 const port = Number(process.env.NODE_PORT) || 8080
 
@@ -25,7 +28,7 @@ const servidor = app.listen(port, () => {
 })
 
 // TODO refatorar desligamento suave (graceful shutdown) 
-function lidarFecharServidor(this: Server<typeof IncomingMessage, typeof ServerResponse>):void {
+function lidarFecharServidor(this: Server<typeof IncomingMessage, typeof ServerResponse>): void {
     console.log('Fechando servidor')
     this.closeAllConnections()
     this.closeIdleConnections()
@@ -44,7 +47,7 @@ function hofDesligamentoSuave(servidor: Server<typeof IncomingMessage, typeof Se
                 }
                 console.log('Servidor fechado')
             })
-        } catch(e) {
+        } catch (e) {
             console.error('Erro ', e)
         } finally {
             console.log('App desligado', new Date(Date.now()).toISOString())
@@ -58,3 +61,5 @@ const lidarDeslgamento = hofDesligamentoSuave(servidor)
 
 process.on('SIGINT', lidarDeslgamento)
 process.on('SIGTERM', lidarDeslgamento)
+
+export default app

@@ -1,0 +1,70 @@
+<div id="cadastro-container" class="container-fluid">
+
+    <h3>Crie seu Clube de Leitura</h3>
+    <form class="d-flex flex-column" action="/clube/criacao" enctype="multipart/form-data">
+
+        <fieldset class="col my-2">
+            <label for="nome-clube">
+                <span>Nome do Clube:</span>
+                <input class="form-control" type="text" name="nome" id="nome-clube" required>
+            </label>
+            <label for="tema">
+                <span>Subtítulo ou Tema:</span>
+                <input class="form-control" type="text" name="tema" id="tema">
+            </label>
+            <label for="categoria">
+                <span>Categoria:</span>
+                <input class="form-control" type="text" name="categoria" id="categoria">
+            </label>
+            <section id="upload-imagem">
+                <label for="idFileUpload">
+                    <input class="form-control" name="imagem-capa" id="upload-imagem" type="file" accept="image/*" />
+                </label>
+            </section>
+        </fieldset>
+
+        <fieldset class="col my-2">
+            <label class="w-100" for="descricao">
+                <span>Descrição:</span>
+                <input class="form-control" class="w-100" type="text" name="descricao" id="descricao"
+                    required>
+            </label>
+        </fieldset>
+
+        <fieldset class="col my-2 d-flex justify-content-between">
+            <div class="d-flex flex-column w-50 me-5">
+
+                <label for="idSite">
+                    <span>Site:</span>
+                    <input class="form-control" type="text" name="site" id="site">
+                </label>
+                <label class="my-3" for="idWhatsApp">
+                    <span>WhatsApp:</span>
+                    <input class="form-control" type="text" name="whatsapp" id="whatsApp">
+                </label>
+                <label for="idTelegram">
+                    <span>Telegram:</span>
+                    <input class="form-control" type="text" name="telegram" id="telegram">
+                </label>
+
+            </div>
+            <label class="w-50" for="redes-sociais">
+                <span>Redes Sociais:</span>
+                <textarea class="form-control w-100 h-100" name="redes-sociais" id="redes-sociais"
+                    style="resize: none"></textarea>
+            </label>
+
+        </fieldset>
+
+        <fieldset class="col my-2">
+            <button></button>
+            <button></button>
+        </fieldset>
+    </form>
+
+</div>
+
+
+<script>
+    <!-- document.querySelectorAll('label').forEach(l => l.style.border = '2px solid blue') -->
+</script>
