@@ -28,6 +28,11 @@ E rode a instalação:
 npm install
 ```
 
+Configure o arquivo `.env`, gere o `PrismaClient`:
+```sh
+npx prisma generate
+```
+
 ## Rodando a Aplicação (Desenvolvimento)
 
 Para rodar a aplicação, na raiz do projeto:
