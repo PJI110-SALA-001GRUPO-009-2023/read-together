@@ -2,12 +2,14 @@ import express from 'express'
 import * as dotenv from 'dotenv'
 import expressLayouts from 'express-ejs-layouts'
 import { IncomingMessage, Server, ServerResponse } from 'http'
+import sessaoService from './services/sessaoService'
 import clubeRouter from './routes/clube'
 import renderCustomizado from './routes/Utils/renderCustomizado'
 
 dotenv.config()
 
 const app = express()
+app.use(sessaoService)
 app.use(express.static('views'))
 app.use(express.static('public'))
 
