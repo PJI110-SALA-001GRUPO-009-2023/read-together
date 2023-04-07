@@ -17,3 +17,11 @@ export type GeneroLivroDadosPK = PropsExigidosOutrasOpcional<GeneroLivro, 'codGe
 export type ClubeDadosPK = PropsExigidosOutrasOpcional<Clube, 'idClube'>
 export type LivroDadosPK = PropsExigidosOutrasOpcional<Livro, 'isbn'>
 export type LeituraDadosPK = PropsExigidosOutrasOpcional<Leitura, 'idLeitura'>
+
+declare module 'express-session' {
+    interface SessionData {
+        idUsuario?: number,
+        userAgent?: string,
+        ip?: string
+    }
+}
