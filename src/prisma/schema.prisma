@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,130 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Clube {
+  idClube       Int             @id @unique(map: "id_clube_UNIQUE") @map("id_clube")
+  nome          String          @db.VarChar(45)
+  descricao     String          @db.VarChar(200)
+  imagem        Bytes?          @db.Blob
+  imagemUrl     String?         @map("imagem_url") @db.VarChar(2048)
+  dataCriacao   DateTime?       @map("dt_criacao") @db.Date
+  leitura       Leitura[]
+  membroDoClube MembroDoClube[]
+
+  @@map("CLUBE")
+}
+
+model GeneroLivro {
+  codGenero Int     @id @unique(map: "cod_genero_UNIQUE") @map("cod_genero")
+  nome      String? @db.VarChar(45)
+  descricao String? @db.VarChar(200)
+  livro     Livro[]
+
+  @@map("GENEROLIVRO")
+}
+
+model Leitura {
+  idLeitura             Int                     @id @unique(map: "id_leitura_UNIQUE") @map("id_leitura")
+  dataInicio            DateTime                @map("dt_inicio") @db.Date
+  dataFim               DateTime                @map("dt_fim") @db.Date
+  idClube               Int                     @map("CLUBE_id_clube")
+  livroIsbn             Int                     @map("LIVRO_isbn")
+  clube                 Clube                   @relation(fields: [idClube], references: [idClube], onDelete: NoAction, onUpdate: NoAction, map: "fk_LEITURA_CLUBE1")
+  livro                 Livro                   @relation(fields: [livroIsbn], references: [isbn], onDelete: NoAction, onUpdate: NoAction, map: "fk_LEITURA_LIVRO1")
+  participanteNaLeitura ParticipanteNaLeitura[]
+  postagem              Postagem[]
+
+  @@index([idClube], map: "fk_LEITURA_CLUBE1_idx")
+  @@index([livroIsbn], map: "fk_LEITURA_LIVRO1_idx")
+  @@map("LEITURA")
+}
+
+model Livro {
+  isbn           Int         @id @unique(map: "isbn_UNIQUE")
+  titulo         String      @db.VarChar(45)
+  edicao         Int?
+  volume         Int?
+  autor          String      @db.VarChar(45)
+  sinopse        String      @db.VarChar(450)
+  dataPublicacao DateTime?   @map("dt_publicacao") @db.Date
+  imagemCapa     Bytes?      @map("img_capa") @db.Blob
+  imagemCapaUrl  String?     @map("img_capa_url") @db.VarChar(2048)
+  codGenero      Int         @map("GENEROLIVRO_cod_genero")
+  leitura        Leitura[]
+  generoLivro    GeneroLivro @relation(fields: [codGenero], references: [codGenero], onDelete: NoAction, onUpdate: NoAction, map: "fk_LIVRO_GENEROLIVRO1")
+
+  @@index([codGenero], map: "fk_LIVRO_GENEROLIVRO1_idx")
+  @@map("LIVRO")
+}
+
+model MembroDoClube {
+  idClube   Int     @map("CLUBE_id_clube")
+  idUsuario Int     @map("USUARIO_id_usuario")
+  codRole   Int     @map("ROLE_cod_role")
+  clube     Clube   @relation(fields: [idClube], references: [idClube], onDelete: NoAction, onUpdate: NoAction, map: "fk_MEMBROS_CLUBE1")
+  role      Role    @relation(fields: [codRole], references: [codRole], onDelete: NoAction, onUpdate: NoAction, map: "fk_MEMBROS_ROLE1")
+  usuario   Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_MEMBROS_USUARIO1")
+
+  @@id([idClube, idUsuario, codRole])
+  @@index([idClube], map: "fk_MEMBRO_CLUBE1_idx")
+  @@index([codRole], map: "fk_MEMBRO_ROLE1_idx")
+  @@index([idUsuario], map: "fk_MEMBRO_USUARIO1_idx")
+  @@map("MEMBRO_DO_CLUBE")
+}
+
+model ParticipanteNaLeitura {
+  idLeitura Int     @map("LEITURA_id_leitura")
+  idUsuario Int     @map("USUARIO_id_usuario")
+  codRole   Int     @map("ROLE_cod_role")
+  leitura   Leitura @relation(fields: [idLeitura], references: [idLeitura], onDelete: NoAction, onUpdate: NoAction, map: "fk_PARTICIPANTE_LEITURA1")
+  role      Role    @relation(fields: [codRole], references: [codRole], onDelete: NoAction, onUpdate: NoAction, map: "fk_PARTICIPANTE_ROLE1")
+  usuario   Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_PARTICIPANTE_USUARIO1")
+
+  @@id([idLeitura, idUsuario, codRole])
+  @@index([idLeitura], map: "fk_PARTICIPANTE_LEITURA1_idx")
+  @@index([codRole], map: "fk_PARTICIPANTE_ROLE1_idx")
+  @@index([idUsuario], map: "fk_PARTICIPANTE_USUARIO1_idx")
+  @@map("PARTICIPANTE_NA_LEITURA")
+}
+
+model Postagem {
+  idPost      Int      @id @unique(map: "id_post_UNIQUE") @map("id_post")
+  dataCriacao DateTime @map("dt_criacao") @db.Date
+  conteudo    String   @db.VarChar(500)
+  idLeitura   Int      @map("LEITURA_id_leitura")
+  idUsuario   Int      @map("USUARIO_id_usuario")
+  leitura     Leitura  @relation(fields: [idLeitura], references: [idLeitura], onDelete: NoAction, onUpdate: NoAction, map: "fk_POSTAGEM_LEITURA1")
+  usuario     Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_POSTAGEM_USUARIO1")
+
+  @@index([idLeitura], map: "fk_POSTAGEM_LEITURA1_idx")
+  @@index([idUsuario], map: "fk_POSTAGEM_USUARIO1_idx")
+  @@map("POSTAGEM")
+}
+
+model Role {
+  codRole               Int                     @id @unique(map: "cod_role_UNIQUE") @map("cod_role")
+  nome                  String                  @unique(map: "nome_UNIQUE") @db.VarChar(45)
+  descricao             String?                 @db.VarChar(200)
+  membroDoClube         MembroDoClube[]
+  participanteNaLeitura ParticipanteNaLeitura[]
+
+  @@map("ROLE")
+}
+
+model Usuario {
+  idUsuario             Int                     @id @unique(map: "id_usuario_UNIQUE") @map("id_usuario")
+  nome                  String                  @db.VarChar(45)
+  email                 String                  @unique(map: "email_UNIQUE") @db.VarChar(255)
+  dataNascimento        DateTime?               @map("dt_nascimento") @db.Date
+  bio                   String?                 @db.VarChar(500)
+  imagem                Bytes?                  @db.Blob
+  imagemUrl             String?                 @map("imagem_url") @db.VarChar(2048)
+  senha                 String                  @db.VarChar(45)
+  membroDoClube         MembroDoClube[]
+  participanteNaLeitura ParticipanteNaLeitura[]
+  postagem              Postagem[]
+
+  @@map("USUARIO")
 }
