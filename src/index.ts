@@ -2,10 +2,12 @@ import express from 'express'
 import * as dotenv from 'dotenv'
 import expressLayouts from 'express-ejs-layouts'
 import { IncomingMessage, Server, ServerResponse } from 'http'
+import sessaoService from './services/sessaoService'
 
 dotenv.config()
 
 const app = express()
+app.use(sessaoService)
 app.use('/views', express.static('views'))
 app.use('/public', express.static('public'))
 
