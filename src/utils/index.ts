@@ -1,0 +1,1 @@
+export const UM_DIA_EM_MS = 86400000
