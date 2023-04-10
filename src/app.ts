@@ -21,8 +21,4 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(multer().array('imagem-capa'))
 app.use(router)
 
-app.get('/', (req, res) => {
-    res.render('index', { title: 'Home | Read Together' })
-})
-
 export default app
