@@ -1,11 +1,13 @@
 import { Livro, Prisma, PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import { GeneroLivroDadosPK } from '../types/services'
+import logger from '../logger'
 
 /**
  * Serviços relacionados aos Livros
  */
 export class LivroService {
+    private static logger = logger.child({ contexto: LivroService.name })
     /**
      * @param prisma default PrismaClient Global
      */
@@ -32,6 +34,14 @@ export class LivroService {
                 }
             }
         })
+            .then(livro => {
+                LivroService.logger.info('Livro criado: ', livro)
+                return livro
+            })
+            .catch(err => {
+                LivroService.logger.error(err)
+                throw err
+            })
     }
 
     /**
