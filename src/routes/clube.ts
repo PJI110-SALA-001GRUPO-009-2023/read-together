@@ -1,17 +1,34 @@
 import express from 'express'
-import renderCustomizado from './Utils/renderCustomizado'
+import { buscarCSS } from './utils/utils'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
  * 
- * /cadastro => rota para a página de criação de clube. Somente um usuários moderador terá acesso autorizado a esta página
+ * @desc {/cadastro} rota para a página de criação de clube. Somente um usuários moderador terá acesso autorizado a esta página
+ * @desc {/}
  */
 const router = express.Router()
 
+const _dirBase = 'clube'
+
 router.get('/cadastro', (req, res) => {
-    renderCustomizado(res,
-        'clube/cadastro',
-        'Cadastro de Clube | Read Together')
+    res.render('clube/cadastro', {
+        titulo: 'Cadastro de Clube | Read Together',
+        diretorioBase: _dirBase,
+        cssCustomizados: buscarCSS(_dirBase)
+    })
+})
+
+router.post('/cadastro', (req, res) => {
+    res.send()
+})
+
+router.get('/detalhes', (req, res) => {
+    res.render('clube/detalhes', {
+        titulo: 'Detalhes sobre o Clube | Read Together',
+        diretorioBase: _dirBase,
+        cssCustomizados: buscarCSS(_dirBase)
+    })
 })
 
 export default router

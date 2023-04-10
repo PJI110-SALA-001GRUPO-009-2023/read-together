@@ -1,70 +1,65 @@
 <div id="cadastro-container" class="container-fluid">
 
-    <h3>Crie seu Clube de Leitura</h3>
-    <form class="d-flex flex-column" action="/clube/criacao" enctype="multipart/form-data">
+    <h3 class="text-center my-4">Crie seu Clube de Leitura</h3>
+    <form class="d-flex flex-column" action="/clube/cadastro" method="post" enctype="multipart/form-data">
 
-        <fieldset class="col my-2">
-            <label for="nome-clube">
-                <span>Nome do Clube:</span>
-                <input class="form-control" type="text" name="nome" id="nome-clube" required>
-            </label>
-            <label for="tema">
-                <span>Subtítulo ou Tema:</span>
-                <input class="form-control" type="text" name="tema" id="tema">
-            </label>
-            <label for="categoria">
-                <span>Categoria:</span>
-                <input class="form-control" type="text" name="categoria" id="categoria">
-            </label>
-            <section id="upload-imagem">
-                <label for="idFileUpload">
-                    <input class="form-control" name="imagem-capa" id="upload-imagem" type="file" accept="image/*" />
+        <fieldset class="row my-2 d-flex justify-content-between">
+            <div class="col-lg-7 d-flex flex-column">
+                <label class="col">
+                    Nome do Clube:
+                    <input class="form-control border border-primary my-2" type="text" name="nome" id="nome-clube" required>
                 </label>
-            </section>
+                <label class="col">
+                    Subtítulo ou Tema:
+                    <input class="form-control border border-primary my-2" type="text" name="tema" id="tema">
+                </label>
+                <label class="col">
+                    Categoria:
+                    <input class="form-control border border-primary my-2" type="text" name="categoria" id="categoria">
+                </label>
+            </div>
+            <div class="col-lg-4 drop-container">
+                <span class="drop-title">Arraste um arquivo para cá <br> ou</span>
+                <label>
+                    <input class="form-control border border-primary" name="imagem-capa" id="upload-imagem" type="file" accept="image/*" />
+                </label>
+            </div>
         </fieldset>
 
-        <fieldset class="col my-2">
-            <label class="w-100" for="descricao">
-                <span>Descrição:</span>
-                <input class="form-control" class="w-100" type="text" name="descricao" id="descricao"
-                    required>
+        <fieldset class="row my-2">
+            <label class="col">
+                Descrição:
+                <textarea rows="3" class="form-control border border-primary w-100 border border-primary" name="descricao" id="descricao" required></textarea>
             </label>
         </fieldset>
 
-        <fieldset class="col my-2 d-flex justify-content-between">
-            <div class="d-flex flex-column w-50 me-5">
+        <fieldset class="row d-flex justify-content-between my-2">
+            <div class="col-lg-5 d-flex flex-column">
 
-                <label for="idSite">
-                    <span>Site:</span>
-                    <input class="form-control" type="text" name="site" id="site">
+                <label>
+                    Site:
+                    <input class="form-control border border-primary" type="url" name="site" id="site">
                 </label>
-                <label class="my-3" for="idWhatsApp">
-                    <span>WhatsApp:</span>
-                    <input class="form-control" type="text" name="whatsapp" id="whatsApp">
+                <label class="my-2">
+                    WhatsApp:
+                    <input class="form-control border border-primary" type="url" name="whatsapp" id="whatsApp">
                 </label>
-                <label for="idTelegram">
-                    <span>Telegram:</span>
-                    <input class="form-control" type="text" name="telegram" id="telegram">
+                <label>
+                    Telegram:
+                    <input class="form-control border border-primary" type="url" name="telegram" id="telegram">
                 </label>
 
             </div>
-            <label class="w-50" for="redes-sociais">
-                <span>Redes Sociais:</span>
-                <textarea class="form-control w-100 h-100" name="redes-sociais" id="redes-sociais"
-                    style="resize: none"></textarea>
+            <label class="col-lg-6 h-100 mt-2-sm">
+                Redes Sociais:
+                <textarea class="form-control border border-primary h-100" name="redes-sociais" id="redes-sociais" rows="7"></textarea>
             </label>
 
         </fieldset>
 
-        <fieldset class="col my-2">
-            <button></button>
-            <button></button>
+        <fieldset class="col-auto mt-5 d-flex justify-content-center">
+            <button class="btn btn-primary">Criar Clube</button>
         </fieldset>
     </form>
 
 </div>
-
-
-<script>
-    <!-- document.querySelectorAll('label').forEach(l => l.style.border = '2px solid blue') -->
-</script>

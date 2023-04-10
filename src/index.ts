@@ -3,25 +3,26 @@ import * as dotenv from 'dotenv'
 import expressLayouts from 'express-ejs-layouts'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import sessaoService from './services/sessaoService'
-import clubeRouter from './routes/clube'
-import renderCustomizado from './routes/Utils/renderCustomizado'
+import router from './routes/routerCentral'
+import bodyParser from 'body-parser'
+import multer from 'multer'
+const upload = multer()
 
 dotenv.config()
 
 const app = express()
+
 app.use(sessaoService)
-app.use(express.static('views'))
+app.use('/views', express.static('views'))
 app.use(express.static('public'))
 
 app.use(expressLayouts)
 app.set('layout', 'layouts/layout')
 app.set('view engine', 'ejs')
 
-app.get('/', (req, res) => {
-    renderCustomizado(res, 'index', 'Home | Read Together')
-})
-
-app.use('/clube', clubeRouter)
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(upload.array('imagem-capa'))
+app.use(router)
 
 const port = Number(process.env.NODE_PORT) || 8080
 
