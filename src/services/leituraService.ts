@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import { ClubeDadosPK, LeituraDadosCriar, LivroDadosPK } from '../types/services'
+import logger from '../logger'
 
 /**
  * Serviços relacionados às Leituras
  */
 export class LeituraService {
+    private static logger = logger.child({ contexto: LeituraService.name })
     /**
      * @param prisma default PrismaClient Global
      */
@@ -30,6 +32,14 @@ export class LeituraService {
                 }
             }
         })
+            .then(leitura => {
+                LeituraService.logger.info('Leitura criada ID: %d', leitura.idLeitura)
+                return leitura
+            })
+            .catch(err => {
+                LeituraService.logger.error(err)
+                throw err
+            })
     }
 }
 

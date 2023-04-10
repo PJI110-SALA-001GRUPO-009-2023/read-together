@@ -2,11 +2,13 @@ import { Clube, Prisma, PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import { UsuarioDadosPK } from '../types/services'
 import { RoleEnum } from '../types/enums'
+import logger from '../logger'
 
 /**
  * Serviços relacionados aos Clubes
  */
 export class ClubeService {
+    private static logger = logger.child({ contexto: ClubeService.name })
     /**
      * @param prisma default PrismaClient Global
      */
@@ -35,6 +37,14 @@ export class ClubeService {
                 }
             }
         })
+            .then(clube => {
+                ClubeService.logger.info('Clube Criado ID: %d', clube.idClube)
+                return clube
+            })
+            .catch(err => {
+                ClubeService.logger.error(err)
+                throw err
+            })
     }
 }
 

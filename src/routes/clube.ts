@@ -1,5 +1,5 @@
 import express from 'express'
-import { buscarCSS } from './utils/utils'
+import { buscarCSS } from './utils/routesUtilities'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes

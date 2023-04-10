@@ -1,20 +1,17 @@
+import * as config from '../config'
+
 import sessao from 'express-session'
 import createMemoryStore from 'memorystore'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const UM_DIA_EM_MS = 86400000
 
 const MemoryStore = createMemoryStore(sessao)
 
 const sessaoService = sessao({
-    secret: process.env.SESSAO_SEGREDO || '',
+    secret: config.SESSAO_SEGREDO,
     store: new MemoryStore({
-        checkPeriod: Number(process.env.SESSAO_PERIODO_CHECK) || UM_DIA_EM_MS
+        checkPeriod: config.SESSAO_PERIODO_CHECK
     }),
     cookie: {
-        maxAge: Number(process.env.SESSAO_MAX_TEMPO) || UM_DIA_EM_MS
+        maxAge: config.SESSAO_MAX_TEMPO
     },
     // Recomendado quando store implementa metodo touch
     resave: false,

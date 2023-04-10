@@ -1,38 +1,23 @@
-import express from 'express'
-import * as dotenv from 'dotenv'
-import expressLayouts from 'express-ejs-layouts'
+/* Deve vir no início para permitir debug */
+import * as config from './config'
+
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import sessaoService from './services/sessaoService'
-import router from './routes/routerCentral'
-import bodyParser from 'body-parser'
-import multer from 'multer'
-const upload = multer()
+import app from './app'
+import logger from './logger'
+import prismaInstance from './prisma/prisma'
 
-dotenv.config()
+const loggerServidor = logger.child({ contexto: 'Servidor' })
+const loggerApp = logger.child({ contexto: 'App' })
 
-const app = express()
-
-app.use(sessaoService)
-app.use('/views', express.static('views'))
-app.use(express.static('public'))
-
-app.use(expressLayouts)
-app.set('layout', 'layouts/layout')
-app.set('view engine', 'ejs')
-
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(upload.array('imagem-capa'))
-app.use(router)
-
-const port = Number(process.env.NODE_PORT) || 8080
+const port = config.NODE_PORT
 
 const servidor = app.listen(port, () => {
-    console.log('Escutando porta: ' + port)
+    loggerServidor.info('Escutando porta: ' + port)
 })
 
 // TODO refatorar desligamento suave (graceful shutdown) 
 function lidarFecharServidor(this: Server<typeof IncomingMessage, typeof ServerResponse>): void {
-    console.log('Fechando servidor')
+    loggerServidor.info('Fechando servidor')
     this.closeAllConnections()
     this.closeIdleConnections()
 }
@@ -42,19 +27,21 @@ servidor.on('close', lidarFecharServidor)
 // HOF - high order function
 function hofDesligamentoSuave(servidor: Server<typeof IncomingMessage, typeof ServerResponse>): () => Promise<void> {
     const lidar = async (): Promise<void> => {
-        console.log('Sinal de desligamento recebido ', new Date(Date.now()).toISOString())
+        loggerApp.info('Sinal de desligamento recebido')
         try {
             await servidor.close((err) => {
                 if (err != undefined) {
-                    console.error('Erro ao fechar servidor: ', err)
+                    loggerServidor.error('Erro ao fechar servidor: ', err)
                 }
-                console.log('Servidor fechado')
+                loggerServidor.info('Servidor fechado')
             })
         } catch (e) {
-            console.error('Erro ', e)
+            loggerServidor.error('Erro %s', JSON.stringify(e))
         } finally {
-            console.log('App desligado', new Date(Date.now()).toISOString())
+            loggerApp.info('App desligado')
+            logger.end({ level: 'info', message: 'Fechando Logger', contexto: 'Logger' })
             process.exit()
+            //a
         }
     }
     return lidar

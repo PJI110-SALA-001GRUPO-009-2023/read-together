@@ -1,11 +1,13 @@
 import { Postagem, PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import { LeituraDadosPK, PostagemDadosCriar, UsuarioDadosPK } from '../types/services'
+import logger from '../logger'
 
 /**
  * Serviços relacionados às Postagens
  */
 export class PostagemService {
+    private static logger = logger.child({ contexto: PostagemService.name })
     /**
      * @param prisma default PrismaClient Global
      */
@@ -35,6 +37,14 @@ export class PostagemService {
                 }
             }
         })
+            .then(postagem => {
+                PostagemService.logger.info('Postagem criada ID: %d', postagem.idPost)
+                return postagem
+            })
+            .catch(err => {
+                PostagemService.logger.error(err)
+                throw err
+            })
     }
 }
 
