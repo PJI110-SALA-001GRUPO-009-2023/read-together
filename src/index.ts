@@ -51,3 +51,5 @@ const lidarDeslgamento = hofDesligamentoSuave(servidor)
 
 process.on('SIGINT', lidarDeslgamento)
 process.on('SIGTERM', lidarDeslgamento)
+
+export default app

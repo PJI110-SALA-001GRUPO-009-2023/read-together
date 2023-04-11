@@ -1,0 +1,7 @@
+div#cadastro-container {
+    max-width: 800px;
+}
+
+textarea {
+    resize: none;
+}
