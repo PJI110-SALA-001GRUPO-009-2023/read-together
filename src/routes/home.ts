@@ -6,9 +6,9 @@ const router = express.Router()
 
 router.get('/', (req, res) => {
     res.render('index', {
-        titulo: 'Home | Read Together',
+        titulo: 'Home',
         diretorioBase: '',
-        cssCustomizados: buscarCSS()
+        cssCustomizados: buscarCSS('index')
     })
 })
 

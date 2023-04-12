@@ -13,9 +13,9 @@ const _dirBase = 'clube'
 
 router.get('/cadastro', (req, res) => {
     res.render('clube/cadastro', {
-        titulo: 'Cadastro de Clube | Read Together',
+        titulo: 'Cadastro de Clube',
         diretorioBase: _dirBase,
-        cssCustomizados: buscarCSS(_dirBase)
+        cssCustomizados: buscarCSS('cadastro', _dirBase)
     })
 })
 
@@ -25,9 +25,9 @@ router.post('/cadastro', (req, res) => {
 
 router.get('/detalhes', (req, res) => {
     res.render('clube/detalhes', {
-        titulo: 'Detalhes sobre o Clube | Read Together',
+        titulo: 'Detalhes sobre o Clube',
         diretorioBase: _dirBase,
-        cssCustomizados: buscarCSS(_dirBase)
+        cssCustomizados: buscarCSS('detalhes', _dirBase)
     })
 })
 
