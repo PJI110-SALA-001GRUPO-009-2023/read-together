@@ -4,7 +4,6 @@ import * as config from './config'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import app from './app'
 import logger from './logger'
-import prismaInstance from './prisma/prisma'
 
 const loggerServidor = logger.child({ contexto: 'Servidor' })
 const loggerApp = logger.child({ contexto: 'App' })

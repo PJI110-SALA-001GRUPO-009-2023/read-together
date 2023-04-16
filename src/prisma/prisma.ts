@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import logger from '../logger'
 
+/**
+ * Instância do PrismaClient para uso global
+ */
 const prismaInstance = new PrismaClient({log: [
     {level: 'info', emit:'event'},
     {level: 'error', emit:'event'}
@@ -14,7 +17,4 @@ prismaInstance.$on('error', (error) => {
     loggerPrisma.error(error.message)
 })
 
-/**
- * Instância do PrismaClient para uso global
- */
 export default prismaInstance

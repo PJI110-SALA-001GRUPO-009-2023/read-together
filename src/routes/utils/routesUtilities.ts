@@ -1,8 +1,7 @@
 import { readdirSync } from 'fs'
-import { dirname, join } from 'path'
+import { join } from 'path'
 
-const PROJECT_ROOT = dirname(dirname(dirname(__dirname))) // volta 3 diretórios na hierarquia "../../.." e captura pra dentro da variável o caminho absotulo resultante => a raiz do projeto.
-const CSS_ROOT = join(PROJECT_ROOT, 'public/css')
+const CSS_ROOT = join(__dirname, '..', '..', '..', 'public', 'css')
 
 /**
  * Busca arquivos CSS em um diretório especificado.

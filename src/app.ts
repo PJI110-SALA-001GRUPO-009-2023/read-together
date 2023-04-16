@@ -5,11 +5,13 @@ import { morganStream } from './logger'
 import sessaoService from './services/sessaoService'
 import bodyParser from 'body-parser'
 import multer from 'multer'
-import router from './routes/routerCentral'
+import router from './routes'
+import { autenticacaoServiceInstance } from './services/autenticacaoService'
 
 const app = express()
-app.use(morgan(':status :method : url – :total-time', {stream: morganStream}))
+app.use(morgan(':status :method :url – :total-time', {stream: morganStream}))
 app.use(sessaoService)
+app.use(autenticacaoServiceInstance.session())
 app.use('/views', express.static('views'))
 app.use(express.static('public'))
 
