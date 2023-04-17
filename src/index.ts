@@ -26,6 +26,8 @@ servidor.on('close', lidarFecharServidor)
 // HOF - high order function
 function hofDesligamentoSuave(servidor: Server<typeof IncomingMessage, typeof ServerResponse>): () => Promise<void> {
     const lidar = async (): Promise<void> => {
+        logger.defaultMeta.sessao = undefined
+        logger.defaultMeta.socket = undefined
         loggerApp.info('Sinal de desligamento recebido')
         try {
             await servidor.close((err) => {
