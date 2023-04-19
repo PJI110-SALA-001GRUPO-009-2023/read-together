@@ -1,0 +1,81 @@
+<div class="modal fade" id="membrosModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="membrosModalLabel"
+    aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div id="modal-conteudo" class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="membrosModalLabel">
+                    Gerenciar membros
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="corpo-modal-membros" class="modal-body">
+                <div class="container-fluid d-flex flex-column h-100">
+                    <section id="convidar-membros" class="mb-3">
+                        <h5 class="fs-4 mb-3">Convidar Para Ser Membro</h5>
+                        <form action="">
+                            <fieldset class="d-flex mb-3 justify-content-around">
+                                <label for="inputEmail" class="col-form-label d-inline">Email</label>
+                                <div class="flex-grow-1 mx-sm-3">
+                                    <input id="inputEmail" class="form-control" type="email">
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" type="button">Enviar convite</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </section>
+                    <section id="membros-atuais" class="flex-grow-1">
+                        <h5 class="fs-4 mb-3">Lista de Membros</h5>
+                        <div id="membros-atuais-teste" class="btn-group">
+                            <button class="position-relative d-inline p-1">Alternado 1</button>
+                            <button class="position-relative d-inline p-1 mx-2">Alternado 2</button>
+                            <button class="position-relative d-inline p-1">Destaque só no topo</button>
+                        </div>
+                        <section id="lista-de-membros" class="position-relative">
+                            <ul class="m-0 p-0 h-75">
+                                <% membros.forEach((membro, idx)=> { %>
+                                    <li class="d-flex w-100 p-2 fs-5 justify-content-between">
+                                        <a href="#" class="d-inline lh-lg">
+                                            <i
+                                                class="circle<%- idx % 2 !== 0 ? '' : '-fill'%>-icon mx-lg-1 lh-base"></i>
+                                            <%- membro %>
+                                        </a>
+                                        <div class="btn-group d-inline" role="group" aria-label="Promover ou banir">
+                                            <button class="btn btn-outline-success">Promover</button>
+                                            <button class="btn btn-outline-danger">Banir</button>
+                                        </div>
+                                    </li>
+                                    <% }) %>
+                            </ul>
+                        </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Para teste - retirar após decisão -->
+<script>
+    document.querySelectorAll('div#membros-atuais-teste button').forEach((btn, idx) => {
+        btn.addEventListener('click', (e) => {
+            let atual = btn.parentElement.parentElement.querySelector('i').className
+            let indexDeIcon = atual.indexOf('-icon')
+            let depoisDeIcon = atual.substring(indexDeIcon)
+            if (idx === 0) {
+                document.querySelectorAll('section#membros-atuais i').forEach((i, id) => {
+                    i.className = `${id % 2 === 0 ? 'circle-fill' : 'circle'}${depoisDeIcon}`
+                })
+            } else if (idx === 1) {
+                document.querySelectorAll('section#membros-atuais i').forEach((i, id) => {
+                    i.className = `${id % 2 !== 0 ? 'circle-fill' : 'circle'}${depoisDeIcon}`
+                })
+            } else {
+                document.querySelectorAll('section#membros-atuais i').forEach((i, id) => {
+                    i.className = `${id <= 1 ? 'circle-fill' : 'circle'}${depoisDeIcon}`
+                })
+            }
+        })
+    })
+</script>
+<!-- Para teste - retirar após decisão -->
