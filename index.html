@@ -1,0 +1,65 @@
+<div id="cadastro-container" class="container-fluid">
+
+    <h3 class="text-center my-4">Crie seu Clube de Leitura</h3>
+    <form class="d-flex flex-column" action="/clube/cadastro" method="post" enctype="multipart/form-data">
+
+        <fieldset class="row my-2 d-flex justify-content-between">
+            <div class="col-lg-7 d-flex flex-column">
+                <label class="col">
+                    Nome do Clube:
+                    <input class="form-control border border-primary my-2" type="text" name="nome" id="nome-clube" required>
+                </label>
+                <label class="col">
+                    Subtítulo ou Tema:
+                    <input class="form-control border border-primary my-2" type="text" name="tema" id="tema">
+                </label>
+                <label class="col">
+                    Categoria:
+                    <input class="form-control border border-primary my-2" type="text" name="categoria" id="categoria">
+                </label>
+            </div>
+            <div class="col-lg-4 drop-container">
+                <span class="drop-title">Arraste um arquivo para cá <br> ou</span>
+                <label>
+                    <input class="form-control border border-primary" name="imagem-capa" id="upload-imagem" type="file" accept="image/*" />
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset class="row my-2">
+            <label class="col">
+                Descrição:
+                <textarea rows="3" class="form-control border border-primary w-100 border border-primary" name="descricao" id="descricao" required></textarea>
+            </label>
+        </fieldset>
+
+        <fieldset class="row d-flex justify-content-between my-2">
+            <div class="col-lg-5 d-flex flex-column">
+
+                <label>
+                    Site:
+                    <input class="form-control border border-primary" type="url" name="site" id="site">
+                </label>
+                <label class="my-2">
+                    WhatsApp:
+                    <input class="form-control border border-primary" type="url" name="whatsapp" id="whatsApp">
+                </label>
+                <label>
+                    Telegram:
+                    <input class="form-control border border-primary" type="url" name="telegram" id="telegram">
+                </label>
+
+            </div>
+            <label class="col-lg-6 h-100 mt-2-sm">
+                Redes Sociais:
+                <textarea class="form-control border border-primary h-100" name="redes-sociais" id="redes-sociais" rows="7"></textarea>
+            </label>
+
+        </fieldset>
+
+        <fieldset class="col-auto mt-5 d-flex justify-content-center">
+            <button class="btn btn-primary">Criar Clube</button>
+        </fieldset>
+    </form>
+
+</div>

@@ -42,7 +42,7 @@ function hofDesligamentoSuave(servidor: Server<typeof IncomingMessage, typeof Se
             loggerApp.info('App desligado')
             logger.end({ level: 'info', message: 'Fechando Logger', contexto: 'Logger' })
             process.exit()
-            //a
+       
         }
     }
     return lidar
