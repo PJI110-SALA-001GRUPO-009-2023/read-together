@@ -27,7 +27,18 @@ router.get('/detalhes', (req, res) => {
     res.render('clube/detalhes', {
         titulo: 'Detalhes sobre o Clube',
         diretorioBase: _dirBase,
-        cssCustomizados: buscarCSS('detalhes', _dirBase)
+        cssCustomizados: buscarCSS('detalhes', _dirBase),
+        membros: [
+            'Charlie Thompson',
+            'Samir Grant',
+            'Dana Fleming',
+            'Elisa O\'Brien',
+            'Ana Castillo',
+            'Ahmed Wade',
+            'Zakir Velazquez',
+            'Abdul Mahoney',
+            'Clifford Miles',
+            'Carlos Moody']
     })
 })
 
