@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs'
 import { join } from 'path'
 
-const CSS_ROOT = join(__dirname, '..', '..', '..', 'public/css')
+const CSS_ROOT = join(__dirname, '..', '..', '..', 'public', 'css')
 
 /**
  * Busca arquivos CSS em um diretório especificado.

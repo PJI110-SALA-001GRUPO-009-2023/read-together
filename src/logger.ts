@@ -15,7 +15,7 @@ const consoleFormato = format.combine(
     }),
     format.splat(),
     format.timestamp({ format: 'YYYY-MM-DD HH:MM:ss.ms' }),
-    format.printf(({ level, timestamp, message, contexto }) => `${timestamp} [${level}]:${contexto ? ' (' + contexto + ') ' : ''} ${message}`))
+    format.printf(({ level, timestamp, message, contexto, socket, sessao }) => `${timestamp}${socket? ' :'+socket+' ':' '}[${level}]:${contexto ? ' (' + contexto + ') ' : ''} ${message}${sessao? ' [' + sessao + ']': ''}`))
 
 const logger = createLogger({
     level: config.WINSTON_LOG_LEVEL,

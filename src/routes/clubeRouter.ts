@@ -1,4 +1,6 @@
-import express from 'express'
+import { Clube } from '@prisma/client'
+import express, { Request, } from 'express'
+import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
 import { buscarCSS } from './utils/routesUtilities'
 
 /**
@@ -19,11 +21,15 @@ router.get('/cadastro', (req, res) => {
     })
 })
 
-router.post('/cadastro', (req, res) => {
+router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Clube>>, res) => {
+    // if (req.session.idUsuario) {
+    //     await clubeServiceInstance.criarClube(req.body, {idUsuario: req.session.idUsuario})
+    // }
     res.send()
 })
 
-router.get('/detalhes', (req, res) => {
+router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'idClube'>>>, res) => {
+    // const clube = await clubeServiceInstance.buscarPorId(req.params.idClube)
     res.render('clube/detalhes', {
         titulo: 'Detalhes sobre o Clube',
         diretorioBase: _dirBase,

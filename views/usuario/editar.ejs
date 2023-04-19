@@ -1,0 +1,23 @@
+<form action="" method="post">
+    <label>
+        Nome
+        <input type="text" name="nome" value="<%=usuario.nome%>">
+    </label>
+    <label>
+        Email
+        <input type="text" name="email" value="<%=usuario.email%>">
+    </label>
+    <label>
+        Senha
+        <input name="senha" type="password">
+    </label>
+    <label>
+        Data de Nascimento
+        <input type="date" name="dataNascimento" value="<%- usuario.dataNascimento.toISOString().substr(0,10)%>">
+    </label>
+    <label>
+        Bio
+        <textarea name="bio"><%=usuario.bio%></textarea>
+    </label>
+    <input type="submit" value="Enviar">
+</form>

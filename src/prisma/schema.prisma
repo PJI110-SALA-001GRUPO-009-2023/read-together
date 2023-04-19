@@ -125,7 +125,7 @@ model Usuario {
   bio                   String?                 @db.VarChar(500)
   imagem                Bytes?                  @db.Blob
   imagemUrl             String?                 @map("imagem_url") @db.VarChar(2048)
-  senha                 String                  @db.VarChar(45)
+  senha                 String                  @db.VarChar(60)
   membroDoClube         MembroDoClube[]
   participanteNaLeitura ParticipanteNaLeitura[]
   postagem              Postagem[]
