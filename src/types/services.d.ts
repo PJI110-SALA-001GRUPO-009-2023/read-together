@@ -1,4 +1,5 @@
-import { Prisma, Usuario, Clube, Livro, GeneroLivro, Leitura } from '@prisma/client'
+import { Clube, GeneroLivro, Leitura, Livro, Prisma, Usuario } from '@prisma/client'
+import { autenticacaoServiceInstance } from '../services/autenticacaoService'
 
 export type LeituraDadosCriar = Omit<Prisma.LeituraCreateInput, 'livro' | 'clube'>
 export type PostagemDadosCriar = Omit<Prisma.PostagemCreateInput, 'leitura' | 'usuario'>
@@ -25,3 +26,11 @@ declare module 'express-session' {
         ip?: string
     }
 }
+
+export interface UsuarioAutenticado extends Express.User {
+    idUsuario?: number,
+    email?: string,
+    nome?: string
+}
+
+export type AutenticacaoService = typeof autenticacaoServiceInstance
