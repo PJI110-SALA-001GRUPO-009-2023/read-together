@@ -5,8 +5,12 @@ const CSS_ROOT = join(__dirname, '..', '..', '..', 'public', 'css')
 
 /**
  * Busca arquivos CSS em um diretório especificado.
- * @param {string} dir - O diretório a ser buscado. O padrão é uma string vazia.
+ * @param {string} view - O nome da view principal // view 'editar', 'login', 'cadastro', etc.
+ * @param {string} [dir] - O diretório a ser buscado. O padrão é uma string vazia.
  * @returns {string[]} Uma lista de nomes de arquivo CSS encontrados no diretório especificado.
+ * @example
+ * // buscarCSS('detalhes', _dir)
+ * // buscarCSS('cadastro', _dir) ...
 */
 export function buscarCSS(view:string, dir = ''): string[] {
     const caminhoAbsolutoDoDiretorio = join(CSS_ROOT, dir)

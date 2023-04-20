@@ -5,11 +5,10 @@ import { UsuarioAutenticado } from '../types/services'
 import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 
-
 const router = express.Router()
 
 router.get('/', (req, res) => {
-    const opcoes = preencherOpcoesDeRender({ cssCustomizados: buscarCSS() })
+    const opcoes = preencherOpcoesDeRender({ cssCustomizados: buscarCSS('') })
     res.render('index', opcoes)
 })
 
