@@ -21,7 +21,7 @@ app.set('layout', './layouts/layout')
 app.set('view engine', 'ejs')
 
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(multer().array('imagem-capa'))
+app.use(multer().array('imagem'))
 app.use((req, res, next) => {
     logger.defaultMeta = {...logger.defaultMeta, sessao: req.sessionID, socket: req.socket.remotePort}
     next()

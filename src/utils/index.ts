@@ -13,7 +13,7 @@ export function compararSenhaComHash(senha: string, hash: string): Promise<boole
 
 export function preencherOpcoesDeRender(params?: Partial<ViewOptionsInterface>): ViewOptionsInterface {
     return {
-        titulo: params?.titulo ?? 'Home | Read Together',
+        titulo: params?.titulo ?? 'Home',
         diretorioBase: params?.diretorioBase ?? '',
         cssCustomizados: params?.cssCustomizados ?? []
     }
@@ -34,6 +34,7 @@ export function preencherOpcoesDeRender(params?: Partial<ViewOptionsInterface>):
  * @returns objeto pós parse
  */
 export function processaParams(params: object): object {
+    console.log(params)
     const entradas: [string, object | number | string | unknown][] = Object.entries(params).map(([chave, valor]) => {
         if (typeof valor === 'object') {
             return [chave, processaParams(valor)]

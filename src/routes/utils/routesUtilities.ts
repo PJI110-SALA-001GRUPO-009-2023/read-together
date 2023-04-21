@@ -12,7 +12,7 @@ const CSS_ROOT = join(__dirname, '..', '..', '..', 'public', 'css')
  * // buscarCSS('detalhes', _dir)
  * // buscarCSS('cadastro', _dir) ...
 */
-export function buscarCSS(view:string, dir = ''): string[] {
+export function buscarCSS(view: string, dir = ''): string[] {
     const caminhoAbsolutoDoDiretorio = join(CSS_ROOT, dir)
     const conteudoDoDiretorio = readdirSync(caminhoAbsolutoDoDiretorio, { withFileTypes: true })
     const arquivosCSS = conteudoDoDiretorio
@@ -21,5 +21,6 @@ export function buscarCSS(view:string, dir = ''): string[] {
             !conteudo.name.includes('main') &&
             conteudo.name.includes('.css'))
         .map(file => file.name)
+    console.log(arquivosCSS)
     return arquivosCSS
 }

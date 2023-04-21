@@ -1,0 +1,16 @@
+<% let telaInicial = titulo.toLowerCase() !== 'home' %>
+<header 
+    class="logo-container m-auto" 
+    <%- telaInicial ? `style="height: 125px"` : ''%> 
+>
+    <img 
+        class="img-fluid"
+        <% if (telaInicial) { %>
+            src="/midia/imagens/Logos/logo-rt-v.png" 
+            alt="Logo V Read-Together"
+        <% } else { %>
+            src="/midia/imagens/Logos/logo-rt-h.png" 
+            alt="Logo H Read-Together"
+        <% } %>
+    >
+</header>

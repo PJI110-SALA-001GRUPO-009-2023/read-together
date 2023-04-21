@@ -1,0 +1,39 @@
+/*main */
+#container-form{
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: var(--lilas) solid;
+}
+
+@media screen and (max-width: 600px) {
+    #container-form {
+        width: 400px;
+    }
+}
+
+.dashed{
+    border: 1px dashed var(--cinza);
+    justify-content: center;
+    width: 100%;
+}
+/* footer */
+
+.container-footer {
+    display: flex;
+    justify-content: center;
+    align-items:end;
+    margin-top: 50px;
+    
+}
+
+.bi-github {
+    color:  var(--lilas);
+    font-size: 14pt;
+    text-decoration: none;
+}
+

@@ -1,0 +1,91 @@
+:root {
+    --lilas:#675fff;
+    --azul-claro: #B1F1FF;
+    --cinza-escuro: #4E4E4E;
+    --cinza: #BDBDBD;
+    --cinza-claro: #E6E6E6;
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+    color: var(--cinza-escuro);
+}
+
+.secondary-color {
+    color:var(--cinza);
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-width: 350px;
+    background-color: var(--cinza-claro);
+}
+
+.rt-git {
+    text-decoration: none;
+}
+
+.logo-container {
+    /* width: 250px; */
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+/*main */
+
+.container-sm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#img-card {
+    width: 350px;
+}
+
+#btn-lilas{
+    background-color: var(--lilas);
+    font-weight: bolder;
+    color: #fff;
+    align-self: center;
+    border: 2px solid var(--lilas);
+}
+
+.call-to-action {
+    width: 280px;
+}
+
+#btn-lilas:hover {
+    background-color: #fff;
+    color:  var(--lilas);
+}
+
+#btn-branco{
+    background-color: #fff;
+    font-weight: bold;
+    color: var(--lilas);
+    border: 2px solid var(--lilas);
+}
+
+#btn-branco:hover {
+    box-shadow: 0 0 4px #3f36f6;
+}
+
+/* footer */
+
+.container-footer {
+    display: flex;
+    justify-content: center;
+    align-items:end;
+    margin-top: 30px;
+}
+
+.bi-github {
+    color:  var(--lilas);
+    font-size: 14pt;
+    text-decoration: none;
+}
