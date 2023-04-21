@@ -17,7 +17,6 @@ app.use('/views', express.static('views'))
 app.use(express.static('public'))
 
 app.use(expressEjsLayouts)
-app.set('layout', './layouts/layout')
 app.set('view engine', 'ejs')
 
 app.use(bodyParser.urlencoded({extended: true}))

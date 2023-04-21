@@ -7,7 +7,7 @@ import { preencherOpcoesDeRender } from '../utils'
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
  * 
- * @desc {/cadastro} rota para a página de criação de clube. Somente um usuários moderador terá acesso autorizado a esta página
+ * @desc {/cadastro} rota para a página de criação de clube.
  * @desc {/}
  */
 const router = express.Router()

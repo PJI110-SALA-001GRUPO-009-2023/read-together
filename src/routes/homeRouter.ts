@@ -4,21 +4,18 @@ import { autenticacaoServiceInstance } from '../services/autenticacaoService'
 import { UsuarioAutenticado } from '../types/services'
 import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
-import { join } from 'path'
 
 const router = express.Router()
 
-const homeLayoutPath = join('..', 'views/layouts', 'layoutHome')
-
 
 router.get('/', (req, res) => {
-    const opcoes = preencherOpcoesDeRender({ diretorioBase: '', cssCustomizados: buscarCSS('index', '') })
-    res.render('index', { layout: homeLayoutPath, ...opcoes })
+    const opcoes = preencherOpcoesDeRender({ cssCustomizados: buscarCSS('index', ''), layout: 'layoutHome'})
+    res.render('index', opcoes)
 })
 
 router.get('/login', (req, res) => {
-    const opcoes = preencherOpcoesDeRender({ titulo: 'Login',  diretorioBase: '', cssCustomizados: buscarCSS('login') })
-    res.render('login', { layout: homeLayoutPath, ...opcoes })
+    const opcoes = preencherOpcoesDeRender({ titulo: 'Login', cssCustomizados: buscarCSS('login'), layout: 'layoutHome' })
+    res.render('login', opcoes)
 })
 
 router.post('/login', autenticacaoServiceInstance.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }))

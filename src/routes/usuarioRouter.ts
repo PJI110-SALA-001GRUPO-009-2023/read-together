@@ -29,17 +29,17 @@ router.get('/cadastro', (req, res) => {
     const opcoes = preencherOpcoesDeRender({
         titulo: 'Cadastro',
         diretorioBase: _viewFolder,
-        cssCustomizados: buscarCSS('cadastro', _viewFolder)
+        cssCustomizados: buscarCSS('cadastro', _viewFolder),
+        layout: 'layoutHome'
     })
 
-    res.render(`${_viewFolder}/novo_cadastro`, { layout: 'layouts/layoutHome', ...opcoes })
+    res.render(`${_viewFolder}/cadastro`, opcoes)
 })
 
 router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Usuario>>, res) => {
     try {
         const dados = <Usuario>processaParams(req.body)
         dados.imagem = randomBytes(2)
-        console.log(dados)
         const usuario = await usuarioServiceInstance.criarUsuario(dados)
         res.redirect(`${req.baseUrl}/${usuario.idUsuario}`)
     } catch (error) {

@@ -21,6 +21,5 @@ export function buscarCSS(view: string, dir = ''): string[] {
             !conteudo.name.includes('main') &&
             conteudo.name.includes('.css'))
         .map(file => file.name)
-    console.log(arquivosCSS)
     return arquivosCSS
 }

@@ -17,5 +17,6 @@ export interface UsuarioRequestParams {
 export interface ViewOptionsInterface {
     titulo: string,
     diretorioBase: string,
-    cssCustomizados: string[]
+    cssCustomizados: string[],
+    layout: string | undefined
 }
