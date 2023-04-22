@@ -1,0 +1,106 @@
+section#clube-info-overview {
+    height: fit-content;
+}
+
+button#btn-ler-mais {
+    border: none;
+    background-color: transparent;
+    font-size: 0.75rem;
+}
+
+section#historico-de-leitura ol a:hover {
+    text-shadow: 0 0 0.1px;
+    transition-timing-function: ease;
+}
+
+section#enquetes-passadas {
+    max-height: 200px;
+}
+
+section#lista-de-membros {
+    max-height: 300px;
+}
+
+section#destaques-leitura,
+section#enquetes-passadas {
+    border: 1px solid #4E4E4E;
+}
+
+section#destaques-leitura,
+section#enquetes-passadas,
+section#lista-de-membros {
+    box-shadow: 0 0 1px #4E4E4E;
+}
+
+
+section#lista-de-membros,
+section#enquetes-passadas {
+    overflow-y: scroll;
+    vertical-align: baseline;
+    line-height: 1.5;
+}
+
+section#lista-de-membros::-webkit-scrollbar,
+section#enquetes-passadas::-webkit-scrollbar {
+    width: 8px;
+}
+
+section#lista-de-membros::-webkit-scrollbar-track,
+section#enquetes-passadas::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+section#lista-de-membros::-webkit-scrollbar-thumb,
+section#enquetes-passadas::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+    border-radius: 10px;
+}
+
+section#lista-de-membros ol,
+section#enquetes-passadas ol {
+    list-style: circle;
+}
+
+section#leitura-do-mes button {
+    border-radius: 0;
+}
+
+div#corpo-modal-membros {
+    height: 700px;
+}
+
+section#botoes-criacao button {
+    border-radius: 0;
+}
+
+form#enquete-form input {
+    height: 1.8rem;
+}
+
+form#enquete-form div>button {
+    height: 1.8rem;
+}
+
+.excluir,
+#pin-opcao {
+    width: 1.3rem;
+}
+
+.excluir:hover {
+    background-color: #cb1f1f;
+}
+
+button#pin-opcao:hover {
+    background-color: initial;
+    cursor: not-allowed;
+}
+
+
+form div#opcoes-enquete button {
+    width: 1.3rem;
+}
+
+form#enquete-form textarea {
+    resize: none;
+}

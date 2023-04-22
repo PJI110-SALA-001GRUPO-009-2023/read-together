@@ -7,11 +7,12 @@
             <div class="col-lg-7 d-flex flex-column">
                 <label class="col">
                     Nome do Clube:
-                    <input class="form-control border border-primary my-2" type="text" name="nome" id="nome-clube" required>
+                    <input class="form-control border border-primary my-2" type="text" name="nome" id="nome-clube"
+                        required>
                 </label>
                 <label class="col">
                     Subtítulo ou Tema:
-                    <input class="form-control border border-primary my-2" type="text" name="tema" id="tema">
+                    <input class="form-control border border-primary my-2" type="text" name="subtitulo" id="tema">
                 </label>
                 <label class="col">
                     Categoria:
@@ -21,7 +22,8 @@
             <div class="col-lg-4 drop-container">
                 <span class="drop-title">Arraste um arquivo para cá <br> ou</span>
                 <label>
-                    <input class="form-control border border-primary" name="imagem-capa" id="upload-imagem" type="file" accept="image/*" />
+                    <input class="form-control border border-primary" name="imagem" id="upload-imagem" type="file"
+                        accept="image/*" />
                 </label>
             </div>
         </fieldset>
@@ -29,7 +31,8 @@
         <fieldset class="row my-2">
             <label class="col">
                 Descrição:
-                <textarea rows="3" class="form-control border border-primary w-100 border border-primary" name="descricao" id="descricao" required></textarea>
+                <textarea rows="3" class="form-control border border-primary w-100 border border-primary"
+                    name="descricao" id="descricao" required></textarea>
             </label>
         </fieldset>
 
@@ -52,7 +55,8 @@
             </div>
             <label class="col-lg-6 h-100 mt-2-sm">
                 Redes Sociais:
-                <textarea class="form-control border border-primary h-100" name="redes-sociais" id="redes-sociais" rows="7"></textarea>
+                <textarea class="form-control border border-primary h-100" name="redes_sociais" id="redes-sociais"
+                    rows="7"></textarea>
             </label>
 
         </fieldset>
@@ -63,3 +67,19 @@
     </form>
 
 </div>
+
+<script>
+    document.querySelector('#cadastro-container').insertAdjacentHTML('afterbegin', `<button class="d-inline-block btn btn-info" onclick="criarDadosTeste()">fill test</button>`)
+
+    function criarDadosTeste() {
+        document.querySelector('input#nome-clube').value = 'nome teste'
+        document.querySelector('input#tema').value = 'subtema teste'
+        document.querySelector('input#categoria').value = 'categoria teste'
+        document.querySelector('input#upload-imagem').value = ''
+        document.querySelector('input#site').value = 'https://site.teste.com'
+        document.querySelector('input#whatsApp').value = 'https://wa.teste.com'
+        document.querySelector('input#telegram').value = 'https://tl.teste.com'
+        document.querySelector('textarea#descricao').value = 'descrição digna de um clube de teste'
+        document.querySelector('textarea#redes-sociais').value = 'https://twitter.com\nhttps://www.kooapp.com/\nhttps://www.instagram.com/'
+    }
+</script>

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
-import {  ViewOptionsInterface } from '../types/routes'
+import { ViewOptionsInterface } from '../types/routes'
+import { join } from 'path'
 
 export const UM_DIA_EM_MS = 86400000
 
@@ -13,10 +14,15 @@ export function compararSenhaComHash(senha: string, hash: string): Promise<boole
 
 export function preencherOpcoesDeRender(params?: Partial<ViewOptionsInterface>): ViewOptionsInterface {
     return {
-        titulo: params?.titulo ?? 'Home | Read Together',
+        titulo: params?.titulo ?? 'Home',
         diretorioBase: params?.diretorioBase ?? '',
-        cssCustomizados: params?.cssCustomizados ?? []
+        cssCustomizados: params?.cssCustomizados ?? [],
+        layout: obterPathDoArquivoDeLayout(params?.layout)
     }
+}
+
+function obterPathDoArquivoDeLayout(nomeArquivo = 'layout'): string {
+    return join('..', 'views/layouts', nomeArquivo)
 }
 
 /**
@@ -48,12 +54,12 @@ export function processaParams(params: object): object {
         }
         return [chave, valor]
     })
-    
+
     return Object.fromEntries(entradas)
 }
 
-function converteStringNaoVaziaEmNumero(s: string): number|null {
-    if(s.trim().length === 0) {
+function converteStringNaoVaziaEmNumero(s: string): number | null {
+    if (s.trim().length === 0) {
         return null
     }
     if (!isNaN(Number(s))) {
@@ -62,8 +68,8 @@ function converteStringNaoVaziaEmNumero(s: string): number|null {
     return null
 }
 
-function converteStringNaoVaziaEmData(s: string): Date|null {
-    if(s.trim().length === 0) {
+function converteStringNaoVaziaEmData(s: string): Date | null {
+    if (s.trim().length === 0) {
         return null
     }
     if (!isNaN(Date.parse(s))) {

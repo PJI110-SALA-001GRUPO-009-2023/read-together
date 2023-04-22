@@ -1,11 +1,19 @@
-<form action="login" method="post">
-    <label>
-        Email:
-        <input type="email" name="email" id="email" />
-    </label>
-    <label>
-        Senha:
-        <input type="password" name="senha" id="senha" />
-    </label>
-    <input type="submit" value="Enviar" />
-</form>
+<div class="container-sm">
+    <form method="post" class="login-rt text-center">
+        <fieldset class="row m-auto">
+            <div class="form-floating mb-3 p-0">
+                <input name="email" type="email" class="form-control border border-primary w-100" id="email" placeholder=" Digite seu E-mail:" required>
+                <label for="email">Digite seu E-mail:</label>
+            </div>
+            <div class="form-floating mb-3 p-0">
+                <input name="senha" type="password" class="form-control border border-primary w-100" id="password" placeholder=" Digite sua Senha:" required>
+                <label for="password">Digite sua Senha:</label>
+            </div>
+        </fieldset>
+        <fieldset class="row-cols-2 text-center">
+            <button type="submit" class="btn col-5" id="btn-lilas">Login</button>
+            <a href="/usuario/cadastro" class="btn col-5 offset-1" id="btn-branco">Cadastre-se</a>
+            <a href="#" class="d-block m-auto" id="bnt-reset">Esqueceu a senha?</a>
+        </fieldset>
+    </form>
+</div>

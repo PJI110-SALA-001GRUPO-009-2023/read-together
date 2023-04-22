@@ -1,8 +1,182 @@
-<div class="container-fluid row mt-4">
-    <section class="col-lg-3 border border-dark me-lg-3"></section>
-    <div class="col">
-        <section class="row border border-dark" style="height:400px;">aa</section>
-        <section class="row border border-dark" style="height: 400px;">ss</section>
+<div class="container mt-4 m-auto d-flex justify-content-around">
+    <section id="clube-info-overview" class="col-lg-3 border border-dark d-flex flex-column py-4">
+        <section class="px-lg-2 w-100" id="clube-resumo">
+            <figure class="m-auto mb-2">
+                <img class="img-fluid rounded-circle" src="/midia/imagens/kaffe.jpg" alt="">
+            </figure>
+            <div role="document">
+                <h4 class="card-title">Nome do clube</h4>
+                <h5 class="text-muted fs-6">Subtítulo do clube</h5>
+                <p id="descricao" class="text-truncate" aria-expanded="false">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit sed quo facere, delectus, nulla
+                    incidunt a voluptatibus, error ea non ipsa eos id. Dignissimos expedita unde modi repellat ut.
+                    <button id="btn-ler-mais" class="d-block btn-link">« Ler mais »</button>
+                </p>
+            </div>
+        </section>
+        <section id="clube-redes">
+            <div class="accordion accordion-flush" id="redes-accordion-container">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Accordion Item #1
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to
+                            demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion
+                            body.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Accordion Item #2
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to
+                            demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion
+                            body. Let's imagine this being filled with some actual content.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseThree" aria-expanded="false"
+                            aria-controls="flush-collapseThree">
+                            Accordion Item #3
+                        </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse"
+                        aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to
+                            demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion
+                            body. Nothing more exciting happening here in terms of content, but just filling up the
+                            space to make it look, at least at first glance, a bit more representative of how this would
+                            look in a real-world application.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <div class="col-lg-8" id="clube-destaques">
+        <section id="destaques-leitura" class="row justify-content-between pt-3 px-1 w-100 m-0" style="height:400px;">
+            <section id="historico-de-leitura" class="col-lg-4 ps-3">
+                <h5 class="fs-6 pt-3">Leituras Recentes:</h5>
+                <ol class="m-0 p-0">
+
+                    <li class="d-flex">
+                        <i class="circle-fill-icon mx-lg-1"></i>
+                        <a href="#" class="d-block text-truncate">
+                            Leitura #1
+                        </a>
+                    </li>
+
+                    <li class="d-flex">
+                        <i class="circle-fill-icon mx-lg-1"></i>
+                        <a href="#" class="d-block text-truncate">
+                            Leitura #2
+                        </a>
+                    </li>
+
+                    <li class="d-flex">
+                        <i class="circle-icon mx-lg-1"></i>
+                        <a href="#" class="d-block text-truncate">
+                            Leitura #3
+                        </a>
+                    </li>
+
+                    <li class="d-flex">
+                        <i class="circle-icon mx-lg-1"></i>
+                        <a href="#" class="d-block text-truncate">
+                            Leitura #4
+                        </a>
+                    </li>
+
+                    <li class="d-flex">
+                        <i class="circle-icon mx-lg-1"></i>
+                        <a href="#" class="d-block text-truncate">
+                            Leitura #5
+                        </a>
+                    </li>
+
+
+                </ol>
+            </section>
+            <section id="leitura-do-mes" class="col-lg-7 justify-self-end d-flex flex-column">
+                <div class="mt-lg-3 bg-secondary w-100" style="height: 230px"></div>
+                <button class="p-lg-1 mt-lg-3 align-self-start btn btn-outline-dark">
+                    Criar Reunião
+                </button>
+            </section>
+        </section>
+        <section class="row w-100 m-0 justify-content-between pt-3 mt-2" style="height: 400px;">
+            <section id="botoes-criacao" class="col-lg-3 p-0 pe-2 d-flex flex-column">
+                <button class="d-inline btn btn-outline-dark mb-2" type="button" data-bs-toggle="modal"
+                    data-bs-target="#enqueteModal">
+                    Criar Enquete
+                </button>
+                
+                <button class="d-inline btn btn-outline-dark mb-2" type="button" data-bs-toggle="modal"
+                data-bs-target="#membrosModal">
+                    Gerenciar Membros
+                </button>
+            </section>
+            <div class="col-sm-4 p-0">
+                <section id="enquetes-passadas" class="position-relative px-2">
+                    <h5 class="fs-6 position-sticky top-0 left-50 right-50 bg-white py-2">Enquetes passadas:</h5>
+                    <ul class="m-0 p-0">
+                        <% for( let idx=0; idx < 6; idx++ ) { %>
+                            <li class="d-flex">
+                                <i class="circle<%- idx > 1 ? '' : '-fill'%>-icon mx-lg-1"></i>
+                                <a href="#" class="d-inline-block text-truncate">
+                                    Enquete para a leitura #<%-idx+1%>
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </section>
+            </div>
+        </section>
     </div>
 </div>
-</div>
+
+<!-- \\ Modais -->
+<%- include('./partials/_enqueteModal.ejs') %>
+<%- include('./partials/_adicionarMembroModal.ejs') %>
+<!-- Modais // -->
+<script src="https://meet.jit.si/external_api.js"></script>
+<script>
+    const domain = 'meet.jit.si';
+    const options = {
+        roomName: 'JitsiMeetAPIExample',
+        parentNode: document.querySelector('#reuniao-do-mes'),
+        lang: 'pt-BR'
+    };
+// const api = new JitsiMeetExternalAPI(domain, options)
+</script>
+<script>
+    (function adicionarFuncionalidadeLerMais() {
+        const btnLerMais = document.querySelector("button#btn-ler-mais")
+        btnLerMais.addEventListener('click', function (e) {
+            const paragDescricao = document.querySelector("p#descricao")
+            const textoEstaEscondido = paragDescricao.getAttribute('class').includes('text-truncate')
+                ? true
+                : false
+            if (textoEstaEscondido) {
+                btnLerMais.textContent = '» guardar «'
+                paragDescricao.setAttribute('class', paragDescricao.getAttribute('class').replace('text-truncate', ''))
+                paragDescricao.setAttribute('aria-expanded', 'true')
+            } else {
+                btnLerMais.textContent = '« Ler mais »'
+                paragDescricao.setAttribute('class', `${paragDescricao.getAttribute('class')} text-truncate`)
+                paragDescricao.setAttribute('aria-expanded', 'false')
+            }
+        })
+    })()
+</script>

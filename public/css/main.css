@@ -12,6 +12,23 @@
     box-sizing: border-box;
 }
 
+/*<Icons>*/
+i.circle-icon {
+    width: 1em;
+    content: url('/midia/circle.svg');
+}
+
+i.circle-fill-icon {
+    width: 1em;
+    content: url('/midia/circle-fill.svg');
+}
+
+.trash-can-icon-toggle {
+    background: no-repeat url('/midia/trash-can-white.svg') center center;
+}
+/*</Icons>*/
+
+
 nav {
     box-shadow: 0 0 5px var(--cinza-escuro);
 }
