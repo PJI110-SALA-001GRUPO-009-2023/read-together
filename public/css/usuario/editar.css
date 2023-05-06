@@ -1,0 +1,75 @@
+.bi-list{
+    font-weight: bolder;
+    font-size: 16;
+}
+
+/*main */
+/* .container-fluid{
+    height: 100%;
+
+}
+.container {
+    margin: 20px auto;
+    padding: 10px;
+    height: 100%;
+    align-items: center;
+} */
+
+/* perfil*/
+.card {
+    padding: 20px;
+    align-items: center;
+}
+
+.foto-perfil {
+    border-radius: 200px;
+    width: 200px;
+}
+
+.container-clubes {
+    padding: 1px;
+
+}
+
+.card {
+    border: 1px solid var(--cinza);
+    border-bottom: 4px solid var(--cinza);
+    border-right: 2px solid var(--cinza);
+    margin: 10px;
+}
+
+#card-clubes {
+    height: 200px;
+}
+
+.linha-bottom {
+    border-bottom: 2px solid var(--cinza);
+    margin: 4px 20px;
+}
+
+.agenda {
+    width: 100%;
+}
+
+.list-group-item {
+    text-align: left;
+}
+
+.btn-outline-primary {
+    border: 1px solid var(--lilas);
+    margin: auto;   
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--lilas);
+}
+
+#btn-clube {
+    width: 100%;
+}
+
+.header-clubes-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

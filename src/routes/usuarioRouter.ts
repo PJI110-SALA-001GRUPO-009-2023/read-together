@@ -52,7 +52,11 @@ router.get('/editar/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>
         const { idUsuario } = req.params
         const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
         if (usuario) {
-            const opcoes = preencherOpcoesDeRender()
+            const opcoes = preencherOpcoesDeRender({
+                titulo: 'Detalhes',
+                diretorioBase: _viewFolder,
+                cssCustomizados: buscarCSS('editar', _viewFolder),
+            })
             res.render(`${_viewFolder}/editar`, { ...opcoes, usuario })
         } else {
             res.status(404).send()

@@ -2,6 +2,7 @@
     --azul-claro: #B1F1FF;
     --cinza-escuro: #4E4E4E;
     --cinza: #BDBDBD;
+    --lilas:#675fff;
     --cinza-claro: #E6E6E6;
     --tamanho-texto-padrao: 16px
 }
@@ -10,6 +11,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body.bg-gray-200 {
+    background-color: var(--bs-gray-200);
 }
 
 /*<Icons>*/
@@ -31,6 +36,10 @@ i.circle-fill-icon {
 
 nav {
     box-shadow: 0 0 5px var(--cinza-escuro);
+}
+
+nav img#logo {
+    height: 40px;
 }
 
 .drop-container {
