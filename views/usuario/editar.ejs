@@ -1,23 +1,106 @@
-<form action="" method="post">
-    <label>
-        Nome
-        <input type="text" name="nome" value="<%=usuario.nome%>">
-    </label>
-    <label>
-        Email
-        <input type="text" name="email" value="<%=usuario.email%>">
-    </label>
-    <label>
-        Senha
-        <input name="senha" type="password">
-    </label>
-    <label>
-        Data de Nascimento
-        <input type="date" name="dataNascimento" value="<%- usuario.dataNascimento?.toISOString().substr(0,10)%>">
-    </label>
-    <label>
-        Bio
-        <textarea name="bio"><%=usuario.bio%></textarea>
-    </label>
-    <input type="submit" value="Enviar">
-</form>
+<div class="container h-100 pt-4">
+    <!-- ROW 1 -->
+    <div class="row" id="row1a"> <!-- Perfil -->
+        <div class="col-lg-4">
+            <div class="card">
+                <img src="/midia/imagens/Logos/logo-rt-neg-quad.png" class="foto-perfil" alt="...">
+                <section class="card-body">
+                    <h4 class="card-title">
+                        Nome Usuário
+                    </h4>
+                    <h5 class="ocupacao">
+                        Ocupação/Formação
+                    </h5>
+                    <i class="bi bi-geo-alt">
+                        Localização
+                    </i>
+                    <div class="linha-bottom"></div>
+                    <p class="card-text">Descrição:</p>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex culpa amet
+                        consequuntur unde ullam, dolor officia enim explicabo molestiae et alias placeat
+                    </p>
+                </section>
+                <section class="w-100">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="#" class="card-link">Link</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="card-link">Link</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="card-link">Link</a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card"> <!-- agenda -->
+                <h4>Agenda:</h4>
+                <div class="card-body agenda">
+                    <ul class="list-group">
+                        <li class="list-group-item">...</li>
+                        <li class="list-group-item">...</li>
+                        <li class="list-group-item">...</li>
+                    </ul>
+                </div>
+                <div class="btn-card">
+                    <button type="button" class="btn btn-outline-primary">Marcar reunião.</button>
+                </div>
+            </div>
+            <div class="card"> <!-- esquete -->
+                <h4>Enquetes:</h4>
+                <div class="card-body agenda">
+                    <ul class="list-group">
+                        <li class="list-group-item">...</li>
+                        <li class="list-group-item">...</li>
+                        <li class="list-group-item">...</li>
+                    </ul>
+                </div>
+                <div class="btn-card">
+                    <button type="button" class="btn btn-outline-primary">Criar uma enquete.</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+
+
+            <div class="container-clubes"> <!-- clubes -->
+                <div class="header-clubes-btn">
+                    <h5>Meus Clubes:</h5>
+                    <button type="button" class="btn btn-outline-primary">Crie seu clube!</button>
+                </div>
+
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="/midia/imagens/Logos/logo-rt-neg-quad.png" class="img-fluid rounded-start"
+                                alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <label for="">[Nome-Clube]</label>
+                                </h5>
+                                <p class="card-text">
+                                    <label for="">[Descrição]</label>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary" id="btn-clube">Entrar</button>
+                </div>
+
+                <div class="linha-bottom"></div>
+
+                <div class="card mb-3" style="max-width: 540px;">
+                    <label for="">...</label>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
