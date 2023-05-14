@@ -19,7 +19,7 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', autenticacaoServiceInstance.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }))
-router.get('/logout', (req, res, next) => {
+router.get('/logout', (req, res) => {
     const opcoes = preencherOpcoesDeRender()
     res.render('logout', opcoes)
 })
