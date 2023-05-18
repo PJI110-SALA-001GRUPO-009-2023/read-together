@@ -18,5 +18,7 @@ export interface ViewOptionsInterface {
     titulo: string,
     diretorioBase: string,
     cssCustomizados: string[],
-    layout: string | undefined
+    layout: string | undefined,
+    clubes: any | undefined,
+    idUsuario: number | null
 }

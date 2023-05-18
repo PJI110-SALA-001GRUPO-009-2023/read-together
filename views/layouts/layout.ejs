@@ -16,11 +16,11 @@
 </head>
 
 <body class="bg-gray-200">
-    <%- include('partials/navigation') %>
-        <main class="m-auto my-2 mb-4">
-            <%- body %>
-        </main>
-        <!-- <footer>Ainda virá</footer> -->
+    <%- include('partials/_navigation', { idUsuario: idUsuario}) %>
+    <main class="m-auto my-2 mb-4">
+        <%- body %>
+    </main>
+    <!-- <footer>Ainda virá</footer> -->
 </body>
 
 </html>
