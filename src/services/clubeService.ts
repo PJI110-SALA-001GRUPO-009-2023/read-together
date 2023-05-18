@@ -46,6 +46,23 @@ export class ClubeService {
                 throw err
             })
     }
+
+    /**
+     * Busca clube por id
+     * @param idClube id do Clube a procura
+     * @returns 
+     */
+    public async buscarPorId(idClube: number): Promise<Clube|null> {
+        return prismaInstance.clube.findUnique({
+            where: {
+                idClube: idClube
+            }
+        })
+            .catch(err =>{
+                ClubeService.logger.error(err)
+                throw err
+            })
+    }
 }
 
 /**

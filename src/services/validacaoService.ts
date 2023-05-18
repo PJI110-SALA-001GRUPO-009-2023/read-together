@@ -1,8 +1,8 @@
-import { Prisma, Usuario } from '@prisma/client'
+import { Clube, Prisma, Usuario } from '@prisma/client'
 import Joi from 'joi'
 import logger from '../logger'
 import { RequestDadosOpcionaisDe } from '../types/routes'
-import { UsuarioDadosPK } from '../types/services'
+import { ClubeDadosPK, UsuarioDadosPK } from '../types/services'
 
 /**
  * Serviço responsável pela validação de dados do usuário
@@ -14,7 +14,6 @@ export class ValidacaoService {
     private static logger = logger.child({ contexto: ValidacaoService.name})
 
     private static criarUsuarioSchema = Joi.object<Prisma.UsuarioCreateInput>({
-        idUsuario: Joi.number().required(), //TODO remover após atualização de IDs
         senha: Joi.string().required(),
         nome: Joi.string().required(),
         email: Joi.string().email().required(),
@@ -26,6 +25,24 @@ export class ValidacaoService {
 
     private static editarUsuarioSchema = ValidacaoService.criarUsuarioSchema.append<UsuarioDadosPK>({
         idUsuario: Joi.number().required()
+    })
+
+    private static criarClubeSchema = Joi.object<Prisma.ClubeCreateInput>({
+        nome: Joi.string().required(),
+        subtitulo: Joi.string().empty(''),
+        descricao: Joi.string().required(),
+        imagem: Joi.binary(),
+        imagemUrl: Joi.string().empty('').default(null),
+        dataCriacao: Joi.date().empty('').default(null),
+        categoria: Joi.string().empty('').default(null),
+        site: Joi.string().empty('').default(null),
+        whatsapp: Joi.string().empty('').default(null),
+        telegram: Joi.string().empty('').default(null),
+        redesSociais: Joi.string().empty('').default(null)
+    })
+
+    private static editarClubeSchema = ValidacaoService.criarClubeSchema.append<ClubeDadosPK>({
+        idClube: Joi.number().required()
     })
 
     /**
@@ -53,6 +70,23 @@ export class ValidacaoService {
      */
     public async validarUsuarioDadosEdicao(idUsuario: number, dados: RequestDadosOpcionaisDe<Usuario>): Promise<UsuarioDadosPK> {
         return ValidacaoService.editarUsuarioSchema.validateAsync({idUsuario, ...dados})
+            .then(dados => {
+                ValidacaoService.logger.debug('Dados validados: ', dados)
+                return dados
+            })
+            .catch((err: Joi.ValidationError) => {
+                ValidacaoService.logger.debug(err)
+                throw err
+            })
+    }
+
+    /**
+     * Valida dados para a criação de clube
+     * @param dados para criar clube
+     * @returns dados validados
+     */
+    public async validarClubeDadosCriacao(dados: RequestDadosOpcionaisDe<Clube>): Promise<Prisma.ClubeCreateInput> {
+        return ValidacaoService.criarClubeSchema.validateAsync(dados)
             .then(dados => {
                 ValidacaoService.logger.debug('Dados validados: ', dados)
                 return dados
