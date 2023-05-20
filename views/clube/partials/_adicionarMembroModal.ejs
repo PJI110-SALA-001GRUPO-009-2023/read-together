@@ -12,14 +12,16 @@
                 <div class="container-fluid d-flex flex-column h-100">
                     <section id="convidar-membros" class="mb-3">
                         <h5 class="fs-4 mb-3">Convidar Para Ser Membro</h5>
-                        <form action="">
+                        <form id="formConvidar" action="/clube/email" method="post">
                             <fieldset class="d-flex mb-3 justify-content-around">
+                                <label class="d-none" for="idClube"></label>
+                                <input class="d-none" id="idClube" type="number" value="<%-idClube%>">
                                 <label for="inputEmail" class="col-form-label d-inline">Email</label>
                                 <div class="flex-grow-1 mx-sm-3">
                                     <input id="inputEmail" class="form-control" type="email">
                                 </div>
                                 <div>
-                                    <button class="btn btn-primary" type="button">Enviar convite</button>
+                                    <button id="btnConvidar" class="btn btn-primary">Enviar convite</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -48,3 +50,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    const formConvite = document.querySelector("#formConvidar")
+    formConvite.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const jsonData = JSON.stringify({
+            idClube: formConvite.querySelector('#idClube').value,
+            emailDestinatario: formConvite.querySelector('#inputEmail').value
+        })
+
+        try {
+            const res = await fetch('/clube/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            console.log(res)
+            alert('Enviado!')
+        } catch (err) {
+            throw new Error(err)
+        }
+    })
+</script>

@@ -48,7 +48,7 @@ body {
     width: 350px;
 }
 
-#btn-lilas{
+#btn-lilas {
     background-color: var(--lilas);
     font-weight: bolder;
     color: #fff;
@@ -56,13 +56,13 @@ body {
     border: 2px solid var(--lilas);
 }
 
-.call-to-action {
-    width: 280px;
-}
-
 #btn-lilas:hover {
     background-color: #fff;
     color:  var(--lilas);
+}
+
+.call-to-action {
+    width: 280px;
 }
 
 #btn-branco{
@@ -89,4 +89,15 @@ body {
     color: var(--lilas);
     font-size: 14pt;
     text-decoration: none;
+}
+
+
+/*Estilização da página de 404*/
+.not-found {
+    margin: 20px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

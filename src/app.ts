@@ -9,8 +9,8 @@ import router from './routes'
 import { autenticacaoServiceInstance } from './services/autenticacaoService'
 
 const app = express()
-app.use(morgan(':method :url Recebido', {stream: morganStream, immediate: true}))
-app.use(morgan(':method :url :status – :total-time Enviado', {stream: morganStream}))
+app.use(morgan(':method :url Recebido', { stream: morganStream, immediate: true }))
+app.use(morgan(':method :url :status – :total-time Enviado', { stream: morganStream }))
 app.use(sessaoService)
 app.use(autenticacaoServiceInstance.session())
 app.use('/views', express.static('views'))
@@ -19,10 +19,10 @@ app.use(express.static('public'))
 app.use(expressEjsLayouts)
 app.set('view engine', 'ejs')
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(multer().array('imagem'))
 app.use((req, res, next) => {
-    logger.defaultMeta = {...logger.defaultMeta, sessao: req.sessionID, socket: req.socket.remotePort}
+    logger.defaultMeta = { ...logger.defaultMeta, sessao: req.sessionID, socket: req.socket.remotePort }
     next()
 })
 app.use(router)
