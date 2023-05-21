@@ -28,7 +28,7 @@ export class LeituraService {
                     connect: { idClube: clube.idClube }
                 },
                 livro: {
-                    connect: { isbn: livro.isbn }
+                    connect: { idLivro: livro.idLivro }
                 }
             }
         })
