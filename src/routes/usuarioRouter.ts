@@ -2,6 +2,8 @@ import { Usuario } from '@prisma/client'
 import { randomBytes } from 'crypto'
 import { Request, Router } from 'express'
 import { esPrismaErro } from '../prisma/prisma'
+import { autenticacaoServiceInstance } from '../services/autenticacaoService'
+import clubeServiceInstance from '../services/clubeService'
 import usuarioServiceInstance from '../services/usuarioService'
 import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosOpcionaisDe, UsuarioRequestParams } from '../types/routes'
@@ -9,6 +11,7 @@ import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 
 const router = Router()
+router.use(autenticacaoServiceInstance.authenticate('session'))
 
 const _viewFolder = 'usuario'
 
@@ -61,11 +64,13 @@ router.get('/editar/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>
     try {
         const { idUsuario } = req.params
         const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
-        if (usuario) {
+        const clube = await clubeServiceInstance.buscaDeClubesRelacionadosAoUsuario({ idUsuario: Number(idUsuario)})
+        if (usuario && clube) {
             const opcoes = preencherOpcoesDeRender({
                 titulo: 'Detalhes',
                 diretorioBase: _viewFolder,
                 cssCustomizados: buscarCSS('editar', _viewFolder),
+                clubes: clube
             })
             res.render(`${_viewFolder}/editar`, { ...opcoes, usuario })
         } else {

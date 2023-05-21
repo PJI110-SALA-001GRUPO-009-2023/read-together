@@ -69,34 +69,40 @@
             <div class="container-clubes"> <!-- clubes -->
                 <div class="header-clubes-btn">
                     <h5>Meus Clubes:</h5>
-                    <button type="button" class="btn btn-outline-primary">Crie seu clube!</button>
+                    <a class="btn btn-outline-primary" href="/clube/cadastro">Crie seu clube!</a>
                 </div>
 
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="/midia/imagens/Logos/logo-rt-neg-quad.png" class="img-fluid rounded-start"
-                                alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <label for="">[Nome-Clube]</label>
-                                </h5>
-                                <p class="card-text">
-                                    <label for="">[Descrição]</label>
-                                </p>
+                <% clubes.forEach(clube=> { %>
+
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4 align-self-center">
+                                <img src="/midia/imagens/Logos/logo-rt-neg-quad-175px.png"
+                                    class="img-fluid rounded-start" alt="...">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <label for=""><%- clube.nome %></label>
+                                    </h5>
+                                    <p class="card-text">
+                                        <label for=""><%- clube.descricao %></label>
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                        <a class="btn btn-outline-primary" id="btn-clube" href="<%-`/clube/${clube.idClube}`%>">
+                            Entrar
+                        </a>
                     </div>
-                    <button type="button" class="btn btn-outline-primary" id="btn-clube">Entrar</button>
-                </div>
 
-                <div class="linha-bottom"></div>
+                    <% }) %>
 
-                <div class="card mb-3" style="max-width: 540px;">
-                    <label for="">...</label>
-                </div>
+                        <div class="linha-bottom"></div>
+
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <label for="">...</label>
+                        </div>
 
             </div>
 

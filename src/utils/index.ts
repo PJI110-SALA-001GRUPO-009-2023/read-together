@@ -17,7 +17,9 @@ export function preencherOpcoesDeRender(params?: Partial<ViewOptionsInterface>):
         titulo: params?.titulo ?? 'Home',
         diretorioBase: params?.diretorioBase ?? '',
         cssCustomizados: params?.cssCustomizados ?? [],
-        layout: obterPathDoArquivoDeLayout(params?.layout)
+        layout: obterPathDoArquivoDeLayout(params?.layout),
+        clubes: params?.clubes ?? null,
+        idUsuario: params?.idUsuario ?? null  
     }
 }
 

@@ -12,3 +12,5 @@ export const SESSAO_MAX_TEMPO: number = Number(process.env.SESSAO_MAX_TEMPO) || 
 export const SESSAO_PERIODO_CHECK: number = Number(process.env.SESSAO_PERIODO_CHECK) || utils.UM_DIA_EM_MS
 
 export const WINSTON_LOG_LEVEL: string = process.env.WINSTON_LOG_LEVEL || 'http'
+
+export const COMMUNICATION_SERVICES_CONNECTION_STRING = process.env.COMMUNICATION_SERVICES_CONNECTION_STRING || ''

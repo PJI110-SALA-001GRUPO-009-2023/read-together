@@ -23,7 +23,7 @@ app.use(express.static('public'))
 app.use(expressEjsLayouts)
 app.set('view engine', 'ejs')
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(multer().array('imagem'))
 app.use(router)
 
