@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="col row justify-content-evenly h-50" id="clube-destaques">
-            <% if (clubeData.admin) { %>
+        <% if (clubeData.admin) { %>
             <section class="col-lg-4 d-flex flex-column">
                 <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary">
                     Criar Reunião
@@ -63,31 +63,8 @@
             </section>
             <%- include('./partials/_enqueteModal.ejs') %>
             <%- include('./partials/_adicionarMembroModal.ejs', {idClube: clubeData.idClube}) %>
-            <% } %>
-                <section id="historico-de-leitura" class="col-lg-6">
-                <div class="card pb-0">
-                    <h4>Leituras Recentes:</h4>
-                    <ul class="list-group w-100 px-2">
-                        <% [1,2,3,4].forEach(i=> { %>
-                            <li class="d-flex">
-                                <li class="list-group-item">
-                                    <a href="">Leitura #<%-i%></a>
-                                </li>
-                            </li>
-                            <% }) %>
-                    </ul>
-                    <div class="my-3">
-                        <ul class="pagination pagination-md m-0">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">1</a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        </ul>
-                    </div>
-                </div>
-        </section>
-
+        <% } %>
+            <%- include('./partials/_listaLeituras.ejs', {usuarioAdmin: clubeData.admin}) %>
         </div>
     </div>
 </div>
@@ -121,34 +98,3 @@
     }
 </script>
 <% } %>
-
-<script>
-    (function () {
-        async function obterLeiturasExistentes() {
-            try {
-                const response = await fetch('/clube/leituras');
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
-                const json = await response.json();
-                return json
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function buildLeituraStorage() {
-            const leituras = await obterLeiturasExistentes()
-            const quantidadeExibidaPorPagina = 4
-            for (let i = 0; i < quantidadeExibidaPorPagina; i++) {
-                let offsetInicial = i*quantidadeExibidaPorPagina
-                let offsetFinal = (i+1)*quantidadeExibidaPorPagina
-                let rangeDeLeitura = leituras.slice(offsetInicial, offsetFinal)
-                localStorage.setItem(`${i+1}`, JSON.stringify(rangeDeLeitura))
-            }
-            
-        }
-
-        window.addEventListener('load', buildLeituraStorage)
-    })()
-</script>
