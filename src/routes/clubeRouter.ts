@@ -1,8 +1,11 @@
-import { Clube } from '@prisma/client'
+import { Clube, Prisma } from '@prisma/client'
 import express, { Request, } from 'express'
+import { autenticacaoServiceInstance } from '../services/autenticacaoService'
+import clubeServiceInstance from '../services/clubeService'
 import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
+import { UsuarioAutenticado, UsuarioDadosPK } from '../types/services'
+import { preencherOpcoesDeRender, processaParams } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
-import { preencherOpcoesDeRender } from '../utils'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
@@ -11,8 +14,20 @@ import { preencherOpcoesDeRender } from '../utils'
  * @desc {/}
  */
 const router = express.Router()
+router.use(autenticacaoServiceInstance.authenticate('session'))
+router.use(express.json())
+
+router.use((req, res, next) => {
+    const user = req.user as UsuarioAutenticado
+    if (!user) {
+        res.redirect('/login')
+    } else {
+        next()
+    }
+})
 
 const _dirBase = 'clube'
+
 
 router.get('/cadastro', (req, res) => {
     const options = preencherOpcoesDeRender({
@@ -25,14 +40,19 @@ router.get('/cadastro', (req, res) => {
 })
 
 router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Clube>>, res) => {
-    // if (req.session.idUsuario) {
-    //     await clubeServiceInstance.criarClube(req.body, {idUsuario: req.session.idUsuario})
-    // }
+    const { idUsuario } = req.user as UsuarioAutenticado
+    const clubeInfo = processaParams(req.body) as Prisma.ClubeCreateInput
+    await clubeServiceInstance.criarClube(
+        {idClube: 1, nome: clubeInfo.nome, descricao: clubeInfo.descricao} ,
+        { idUsuario } as UsuarioDadosPK)
     res.send()
 })
 
 router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'idClube'>>>, res) => {
-    // const clube = await clubeServiceInstance.buscarPorId(req.params.idClube)
+    const clube = await clubeServiceInstance.buscaPorId(Number(req.params.idClube))
+    if (!clube) {
+        res.redirect('/404')
+    }
     const membros = [
         'Charlie Thompson',
         'Samir Grant',
@@ -52,7 +72,29 @@ router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'id
         cssCustomizados: buscarCSS('detalhes', _dirBase)
     })
 
-    res.render('clube/detalhes', {...options, membros}) 
+    res.render('clube/detalhes', { ...options, membros, idClube: req.params.idClube })
 })
+
+// router.post('/email', async (req, res) => {
+//     const { idClube } = req.body
+//     const { idUsuario, nome, email } = req.user as UsuarioAutenticado
+//     const remetenteModerador = await clubeServiceInstance.verificarSeUsuarioEModeradorDoClube(
+//         idClube, Number(idUsuario))
+//     if (remetenteModerador) {
+//         console.log('algo deu errado')
+//         res.json({ status: 'Nao Autorizado' })
+//     } else {
+//         try {
+//             const mail = await emailServiceInstance.enviarEmailDeConvite(
+//                 'teste',
+//                 nome ?? 'nomeFallback',
+//                 'Fulano',
+//                 email ?? 'jalucas.jall@gmail.com')
+//             res.json({ status: 'Em process de envio' })
+//         } catch (e) {
+//             console.error(e)
+//         }
+//     }
+// })
 
 export default router
