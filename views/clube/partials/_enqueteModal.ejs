@@ -1,49 +1,63 @@
+<!-- Outer modal -->
 <div class="modal fade" id="enqueteModal" tabindex="-1" aria-labelledby="enqueteModalLabel" aria-hidden="true">
-    <div class="modal-md modal-dialog modal-dialog-scrollable">
-        <div id="modal-conteudo" class="modal-content">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div id="modal-conteudo-enquete" class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="enqueteModalLabel">Modal title</h1>
+                <h1 class="modal-title fs-5" id="enqueteModalLabel">Gerenciar Enquetes</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="corpo-modal" class="modal-body m-auto">
-                <div class="container-fluid d-flex justify-content-between">
-                    <section class="m-0 p-3 border border-dark">
-                        <h5 class="fs-2">Nova enquete</h5>
-                        <form id="enquete-form" action="">
-                            <fieldset class="d-flex flex-column mb-3">
-                                <label for="nome-enquete" class="my-1">
-                                    Titulo da Enquete:
-                                    <input class="form-control required" type="text" name="nome-enquete"
-                                        id="nome-enquete" required>
-                                </label>
-                                <label for="descricao-enquete">
-                                    Descrição da Enquete:
-                                    <textarea class="form-control" name="descricao-enquete" id="descricao-enquete"
-                                        cols="30" rows="2"></textarea>
-                                </label>
-                            </fieldset>
-                            <fieldset id="opcoes-enquete" class="d-flex flex-column">
-                                <div class="row m-0">
-                                    <div class="col-11 p-0">
-                                        <label for="opcao1-enquete" class="my-1 w-100">
-                                            Opção 1:
-                                            <input class="form-control col-10" type="text" name="opcao1-enquete"
-                                                id="opcao1-enquete" required="">
-                                        </label>
-                                    </div>
-                                    <div class="col-1 align-self-end p-0 m-0">
-                                        <button id="pin-opcao" class="p-1 m-0 mb-1 ms-1 trash-can-icon-toggle"
-                                            type="button" disabled></button>
-                                    </div>
+            <div class="modal-body row px-lg-5">
+                <section style="margin-bottom: 54px" class="col-lg-4 p-3 card">
+                    <h4>Nova enquete:</h4>
+                    <form id="enquete-form" action="">
+                        <fieldset class="d-flex flex-column mb-3">
+                            <label for="nome-enquete" class="my-1">
+                                Titulo da Enquete:
+                                <input class="form-control required" type="text" name="nome-enquete"
+                                    id="nome-enquete" required>
+                            </label>
+                            <label for="descricao-enquete">
+                                Descrição da Enquete:
+                                <textarea class="form-control" name="descricao-enquete" id="descricao-enquete"
+                                    cols="30" rows="2"></textarea>
+                            </label>
+                        </fieldset>
+                        <fieldset id="opcoes-enquete" class="d-flex flex-column">
+                            <div class="row m-0">
+                                <div class="col-11 p-0">
+                                    <label for="opcao1-enquete" class="my-1 w-100">
+                                        Opção 1:
+                                        <input class="form-control col-10" type="text" name="opcao1-enquete"
+                                            id="opcao1-enquete" required="">
+                                    </label>
                                 </div>
-                            </fieldset>
-                            <button id="adicionar-opcao-enquete" class="d-inline mt-1 w-100 btn btn-outline-dark"
-                                type="button">
+                                <div class="col-1 align-self-end p-0 m-0">
+                                    <button id="pin-opcao" class="p-1 m-0 mb-1 ms-1 trash-can-icon-toggle"
+                                        type="button" disabled></button>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="btn-group w-100 mt-3" role="group" aria-label="Adicionar ou Enviar">
+                            <button id="adicionar-opcao-enquete" class="btn btn-branco h-100" type="button">
                                 <b>+</b>
                             </button>
-                        </form>
-                    </section>
-                </div>
+                            <button type="submit" class="btn btn-lilas btn-dark h-100">Enviar</button>
+                        </div>
+                    </form>
+                </section>
+                <section class="col-lg-4 offset-lg-4 card" style="height: 434px">
+                    <h4>Enquetes:</h4>
+                    <div class="card-body w-100" style="max-height: 232px">
+                        <ul class="list-group">
+                            <li class="list-group-item">...</li>
+                            <li class="list-group-item">...</li>
+                            <li class="list-group-item">...</li>
+                            <li class="list-group-item">...</li>
+                            <li class="list-group-item">...</li>
+                            <li class="list-group-item">...</li>
+                        </ul>
+                    </div>
+                </section>
             </div>
             <div class="modal-footer">
                 <button id="close-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
@@ -54,70 +68,69 @@
     </div>
 </div>
 
-
 <script>
+    (function() {
+        function descartarModal() {
+            let containerConteudo = document.querySelector('#modal-conteudo-enquete')
+            containerConteudo.children[1].remove()
+            containerConteudo.children[0].outerHTML += `<div class="modal-body"><div class="container-fluid d-flex justify-content-between"><section class="m-0 p-3 border border-dark"><h5 class="fs-2">Nova enquete</h5><form id="enquete-form" action=""><fieldset class="d-flex flex-column mb-3"><label for="nome-enquete" class="my-1"> Titulo da Enquete: <input class="form-control required" type="text" name="nome-enquete" id="nome-enquete" required></label><label for="descricao-enquete"> Descrição da Enquete: <textarea class="form-control" name="descricao-enquete" id="descricao-enquete" cols="30" rows="2"></textarea></label></fieldset><fieldset id="opcoes-enquete" class="d-flex flex-column"><div class="row m-0"><div class="col-11 p-0"><label for="opcao1-enquete" class="my-1 w-100"> Opção 1: <input class="form-control col-10" type="text" name="opcao1-enquete" id="opcao1-enquete" required=""></label></div><div class="col-1 align-self-end p-0 m-0"><button id="pin-opcao" class="p-1 m-0 mb-1 ms-1 trash-can-icon-toggle" type="button" disabled></button></div></div></fieldset><button id="adicionar-opcao-enquete" class="d-inline mt-1 w-100 btn btn-outline-dark" type="button"><b>+</b></button></form></section><section class="h-50 align-self-center"></section></div>`
+            definirEventoDeAdicaoDeOpcaoDeVoto()
+        }
 
-    function descartarModal() {
-        let containerConteudo = document.querySelector('#modal-conteudo')
-        containerConteudo.children[1].remove()
-        containerConteudo.children[0].outerHTML += `<div class="modal-body"><div class="container-fluid d-flex justify-content-between"><section class="m-0 p-3 border border-dark"><h5 class="fs-2">Nova enquete</h5><form id="enquete-form" action=""><fieldset class="d-flex flex-column mb-3"><label for="nome-enquete" class="my-1"> Titulo da Enquete: <input class="form-control required" type="text" name="nome-enquete" id="nome-enquete" required></label><label for="descricao-enquete"> Descrição da Enquete: <textarea class="form-control" name="descricao-enquete" id="descricao-enquete" cols="30" rows="2"></textarea></label></fieldset><fieldset id="opcoes-enquete" class="d-flex flex-column"><div class="row m-0"><div class="col-11 p-0"><label for="opcao1-enquete" class="my-1 w-100"> Opção 1: <input class="form-control col-10" type="text" name="opcao1-enquete" id="opcao1-enquete" required=""></label></div><div class="col-1 align-self-end p-0 m-0"><button id="pin-opcao" class="p-1 m-0 mb-1 ms-1 trash-can-icon-toggle" type="button" disabled></button></div></div></fieldset><button id="adicionar-opcao-enquete" class="d-inline mt-1 w-100 btn btn-outline-dark" type="button"><b>+</b></button></form></section><section class="h-50 align-self-center"></section></div>`
-        definirEventoDeAdicaoDeOpcaoDeVoto()
-    }
+        function criarBotao(ordem) {
+            const btn = document.createElement('button')
+            btn.setAttribute('id', `opcao${ordem}-excluir`)
+            btn.setAttribute('class', 'excluir p-1 m-0 mb-1 ms-1 trash-can-icon-toggle')
+            btn.setAttribute('type', 'button')
+            return btn.outerHTML
+        }
 
-    function criarBotao(ordem) {
-        const btn = document.createElement('button')
-        btn.setAttribute('id', `opcao${ordem}-excluir`)
-        btn.setAttribute('class', 'excluir p-1 m-0 mb-1 ms-1 trash-can-icon-toggle')
-        btn.setAttribute('type', 'button')
-        return btn.outerHTML
-    }
+        function reordenarOpcoes() {
+            let opcoesEnquete = document.querySelectorAll("label.opcao-adicional")
+            opcoesEnquete.forEach((label, idx) => {
+                let textoAtual = label.innerHTML.trim()
+                let indexDoisPontos = textoAtual.indexOf(':')+1
 
-    function reordenarOpcoes() {
-        let opcoesEnquete = document.querySelectorAll("label.opcao-adicional")
-        opcoesEnquete.forEach((label, idx) => {
-            let textoAtual = label.innerHTML.trim()
-            let indexDoisPontos = textoAtual.indexOf(':')+1
-
-            label.innerHTML = `Opção ${idx+2}:${textoAtual.substring(indexDoisPontos)}`
-        })
-    }
-
-    function handleRemoverContainer(e) {
-        e.target.parentElement.parentElement.remove()
-        reordenarOpcoes()
-    }
-
-    function aplicarEventosDeExclusaoAsOpcoesExistentes() {
-        let opcoes = document.querySelectorAll('button.excluir[id^="opcao"]')
-        opcoes.forEach((btn, idx) => {
-            btn.removeEventListener('click', handleRemoverContainer)
-            btn.addEventListener('click', handleRemoverContainer)
-        })
-    }
-
-    function definirEventoDeAdicaoDeOpcaoDeVoto() {
-        document
-            .querySelector("button#adicionar-opcao-enquete")
-            .addEventListener('click', function (e) {
-                let opcoesEnquete = document.querySelector("fieldset#opcoes-enquete")
-                let numOpcoes = opcoesEnquete.childElementCount
-                opcoesEnquete.innerHTML += `
-                <div class="row m-0">
-                    <div class="col-11 p-0">
-                        <label for="opcao${numOpcoes + 1}-enquete" class="my-1 w-100 opcao-adicional">
-                            Opção ${numOpcoes + 1}:
-                            <input class="form-control col-10" type="text" name="opcao${numOpcoes + 1}-enquete"
-                            id="opcao${numOpcoes + 1}-enquete" required="">
-                        </label>
-                    </div>
-                    <div class="col-1 align-self-end p-0 m-0">
-                        ${criarBotao(numOpcoes + 1)}
-                    </div>
-                </div>`
-                aplicarEventosDeExclusaoAsOpcoesExistentes()
+                label.innerHTML = `Opção ${idx+2}:${textoAtual.substring(indexDoisPontos)}`
             })
-    }
+        }
 
-    definirEventoDeAdicaoDeOpcaoDeVoto()
+        function handleRemoverContainer(e) {
+            e.target.parentElement.parentElement.remove()
+            reordenarOpcoes()
+        }
 
+        function aplicarEventosDeExclusaoAsOpcoesExistentes() {
+            let opcoes = document.querySelectorAll('button.excluir[id^="opcao"]')
+            opcoes.forEach((btn, idx) => {
+                btn.removeEventListener('click', handleRemoverContainer)
+                btn.addEventListener('click', handleRemoverContainer)
+            })
+        }
+
+        function definirEventoDeAdicaoDeOpcaoDeVoto() {
+            document
+                .querySelector("button#adicionar-opcao-enquete")
+                .addEventListener('click', function (e) {
+                    let opcoesEnquete = document.querySelector("fieldset#opcoes-enquete")
+                    let numOpcoes = opcoesEnquete.childElementCount
+                    opcoesEnquete.innerHTML += `
+                    <div class="row m-0">
+                        <div class="col-11 p-0">
+                            <label for="opcao${numOpcoes + 1}-enquete" class="my-1 w-100 opcao-adicional">
+                                Opção ${numOpcoes + 1}:
+                                <input class="form-control col-10" type="text" name="opcao${numOpcoes + 1}-enquete"
+                                id="opcao${numOpcoes + 1}-enquete" required="">
+                            </label>
+                        </div>
+                        <div class="col-1 align-self-end p-0 m-0">
+                            ${criarBotao(numOpcoes + 1)}
+                        </div>
+                    </div>`
+                    aplicarEventosDeExclusaoAsOpcoesExistentes()
+                })
+        }
+
+        definirEventoDeAdicaoDeOpcaoDeVoto()
+    })()
 </script>

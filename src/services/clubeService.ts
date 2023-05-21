@@ -1,8 +1,21 @@
-import { Clube, Prisma, PrismaClient } from '@prisma/client'
+import { Clube, MembroDoClube, Prisma, PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
-import { UsuarioDadosPK } from '../types/services'
-import { RoleEnum } from '../types/enums'
+import { PropsExigidosOutrasOpcional, UsuarioDadosPK } from '../types/services'
+import { RoleEnum, DadosClubeERoleValidacaoInfo, DadosClubeERoleValidacaoCodes } from '../types/enums'
 import logger from '../logger'
+
+interface DadosClubeERole {
+    nome: string;
+    subtitulo: string;
+    descricao: string;
+    imagem: string | null;
+    imagemUrl: string | null;
+    site: string;
+    whatsapp: string | null;
+    telegram: string | null;
+    redesSociais: string | null;
+    admin: boolean | null;
+}
 
 /**
  * Serviços relacionados aos Clubes
@@ -50,7 +63,7 @@ export class ClubeService {
     public async buscaDeClubesRelacionadosAoUsuario(
         this: ClubeService,
         usuario: UsuarioDadosPK,
-    ): Promise<any> {
+    ): Promise<Partial<Clube>[]> {
         return this.prisma.clube.findMany({
             select: {
                 idClube: true,
@@ -75,34 +88,77 @@ export class ClubeService {
             })
     }
 
-    public async verificarSeUsuarioEModeradorDoClube(
+    public async obterDadosClubeRoleSeExistiremClubeUsuario(
         this: ClubeService,
         idClube: number,
         idUsuario: number
-    ): Promise<boolean> {
-        const idClubeResultado = await this.prisma.clube.findFirst({
+    ): Promise<Array<DadosClubeERole> | DadosClubeERoleValidacaoCodes> {
+        const objetoResultado: Array<any> = await this.prisma.$queryRaw`
+            CALL SP_SELECT_DADOS_CLUBE_E_ROLE_SE_USUARIO_FOR_REGISTRADO(${idClube}, ${idUsuario})`
+        const objetoResultadoMapeado: DadosClubeERole[] = objetoResultado.map(o => {
+            return {
+                nome: o.f0,
+                subtitulo: o.f1 || null,
+                descricao: o.f2 || null,
+                imagem: o.f3 || null,
+                imagemUrl: o.f4 || null,
+                site: o.f5 || null,
+                whatsapp: o.f6 || null,
+                telegram: o.f7 || null,
+                redesSociais: o.f8 || null,
+                admin: this.SeNaoNuloVerificarRole(o)
+            }
+        })
+
+        const { nome: ResultadoValidacao } = objetoResultadoMapeado[0]
+        if (ResultadoValidacao === DadosClubeERoleValidacaoInfo.CLUBE_NAO_EXISTE) {
+            return DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE
+        } else if (ResultadoValidacao === DadosClubeERoleValidacaoInfo.USUARIO_NAO_PARTICIPANTE) {
+            return DadosClubeERoleValidacaoCodes.USUARIO_NAO_PARTICIPANTE
+        } else {
+            console.log(objetoResultadoMapeado)
+            return objetoResultadoMapeado
+        }
+
+    }
+
+    private SeNaoNuloVerificarRole(o: any): boolean | null {
+        if (!o.f9) {
+            return null
+        } else {
+            return o.f9 === 1
+        }
+    }
+
+    public async verificarSeEstaRegistradoNoClube(
+        this: ClubeService,
+        idClube: number,
+        idUsuario: number
+    ): Promise<false | PropsExigidosOutrasOpcional<MembroDoClube, 'codRole'>[]> {
+        const resObjetoMembro = await this.prisma.clube.findFirst({
             select: {
-                idClube: true
+                membroDoClube: {
+                    select: {
+                        codRole: true
+                    }
+                }
             },
             where: {
                 membroDoClube: {
                     some: {
                         idUsuario: idUsuario,
-                        role: {
-                            codRole: RoleEnum.ADMIN
-                        }
+                        idClube: idClube
                     }
                 },
-
             }
         })
-        console.log(idClubeResultado)
-        if (!idClubeResultado ||
-            idClubeResultado.idClube !== idClube) {
+        console.log(resObjetoMembro)
+        if (!resObjetoMembro) {
             return false
         } else {
-            return true
+            return resObjetoMembro.membroDoClube
         }
+
     }
 
 

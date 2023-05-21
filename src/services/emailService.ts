@@ -1,18 +1,21 @@
 import * as config from '../config'
 import { EmailClient, EmailMessage, KnownEmailSendStatus } from '@azure/communication-email'
+import { AzureKeyCredential } from '@azure/core-auth'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import logger from '../logger'
 
 class EmailService {
-    #connectionString: string
     #emailClient: EmailClient
     #POLLER_TEMPO_ESPERA: number
     #dominioEmailApp: string
+    #azureEmailCommsEndpoint: string
+    #azureEmailCommsKey: AzureKeyCredential
 
     constructor() {
-        this.#connectionString = config.COMMUNICATION_SERVICES_CONNECTION_STRING
-        this.#emailClient = new EmailClient(this.#connectionString)
+        this.#azureEmailCommsEndpoint = config.AZURE_EMAIL_COMMS_SERVICE_ENDPOINT
+        this.#azureEmailCommsKey = new AzureKeyCredential(config.AZURE_EMAIL_COMMS_SERVICE_KEY)
+        this.#emailClient = new EmailClient(this.#azureEmailCommsEndpoint, this.#azureEmailCommsKey)
         this.#POLLER_TEMPO_ESPERA = 10
         this.#dominioEmailApp = 'DoNotReply@c7bb72eb-d9ca-4e21-92f2-823432e90a58.azurecomm.net'
     }
@@ -26,11 +29,8 @@ class EmailService {
             { encoding: 'utf8' }
         )
         console.log(htmlBase.substring(0, 20))
-        htmlBase
-            .replace('${nome_clube}', nomeClube)
-            .replace('${nome_remetente}', nomeRemetente)
-            .replace('${nome_destinatario}', nomeDestinatario)
-        return htmlBase
+        const htmlDefinitivo = htmlBase.replace('${nome_clube}', nomeClube).replace('${nome_remetente}', nomeRemetente).replace('${nome_destinatario}', nomeDestinatario)
+        return htmlDefinitivo
     }
 
     #contruirConteudoEmail(
@@ -47,7 +47,7 @@ class EmailService {
             recipients: {
                 to: [{
                     address: `<${emailDestinatario}>`,
-                    displayName: nomeDestinatario
+                    displayName: 'DoNotReply'
                 }]
             }
         }
@@ -71,7 +71,7 @@ class EmailService {
                 poller.poll()
                 console.log('Envio de e-mail em progresso')
 
-                await new Promise((resolve) => setTimeout(resolve, this.#POLLER_TEMPO_ESPERA * 1000))
+                await new Promise(resolve => setTimeout(resolve, this.#POLLER_TEMPO_ESPERA * 1000))
                 tempoDecorrido += 10
 
                 if (tempoDecorrido > 18 * this.#POLLER_TEMPO_ESPERA) {
@@ -83,7 +83,7 @@ class EmailService {
             if (poller.getResult()?.status === KnownEmailSendStatus.Succeeded) {
                 console.log('email enviado!')
             } else {
-                logger.error(poller.getResult())
+                console.error(poller.getResult()?.error)
             }
         } catch (e) {
             console.error(e)

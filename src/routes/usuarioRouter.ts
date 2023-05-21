@@ -7,7 +7,8 @@ import { buscarCSS } from './utils/routesUtilities'
 import { randomBytes } from 'crypto'
 import clubeServiceInstance from '../services/clubeService'
 import { autenticacaoServiceInstance } from '../services/autenticacaoService'
-import { UsuarioDadosPK } from '../types/services'
+import { UsuarioAutenticado, UsuarioDadosPK } from '../types/services'
+import { StatusCodes } from '../types/enums'
 
 const router = Router()
 router.use(autenticacaoServiceInstance.authenticate('session'))
@@ -21,7 +22,7 @@ router.get('/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>, res) 
         if (usuario) {
             res.send(usuario)
         } else {
-            res.status(404).send()
+            res.status(StatusCodes.NOT_FOUND).send()
         }
     } catch (error) {
         res.redirect(500, 'back')
@@ -52,7 +53,7 @@ router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe
 
 router.get('/editar/:idUsuario(\\d+)?', async (req: Request<UsuarioRequestParams>, res) => {
     try {
-        const { idUsuario } = req.params
+        const idUsuario = req.params.idUsuario || (req.user as UsuarioAutenticado).idUsuario!
         const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
         const clube = await clubeServiceInstance.buscaDeClubesRelacionadosAoUsuario({ idUsuario: Number(idUsuario)})
         if (usuario && clube) {
@@ -64,7 +65,7 @@ router.get('/editar/:idUsuario(\\d+)?', async (req: Request<UsuarioRequestParams
             })
             res.render(`${_viewFolder}/editar`, { ...opcoes, usuario })
         } else {
-            res.status(404).send()
+            res.status(StatusCodes.NOT_FOUND).send()
         }
     } catch (error) {
         res.redirect(500, 'back')
