@@ -16,7 +16,7 @@ export type PropsExigidosOutrasOpcional<T, K extends keyof T> = Pick<T, K> & Par
 export type UsuarioDadosPK = PropsExigidosOutrasOpcional<Usuario, 'idUsuario'>
 export type GeneroLivroDadosPK = PropsExigidosOutrasOpcional<GeneroLivro, 'codGenero'>
 export type ClubeDadosPK = PropsExigidosOutrasOpcional<Clube, 'idClube'>
-export type LivroDadosPK = PropsExigidosOutrasOpcional<Livro, 'isbn'>
+export type LivroDadosPK = PropsExigidosOutrasOpcional<Livro, 'idLivro'>
 export type LeituraDadosPK = PropsExigidosOutrasOpcional<Leitura, 'idLeitura'>
 
 declare module 'express-session' {

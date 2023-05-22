@@ -1,14 +1,15 @@
 import { Clube, Prisma } from '@prisma/client'
 import express, { Request, } from 'express'
-import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
-import { buscarCSS } from './utils/routesUtilities'
-import { preencherOpcoesDeRender } from '../utils'
+import { esPrismaErro } from '../prisma/prisma'
 import { autenticacaoServiceInstance } from '../services/autenticacaoService'
 import clubeServiceInstance from '../services/clubeService'
-import { UsuarioAutenticado, UsuarioDadosPK } from '../types/services'
 import emailServiceInstance from '../services/emailService'
 import { DadosClubeERoleValidacaoCodes, RoleEnum, StatusCodes } from '../types/enums'
-import prismaInstance from '../prisma/prisma'
+import validacaoServiceInstance from '../services/validacaoService'
+import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
+import { UsuarioAutenticado } from '../types/services'
+import { preencherOpcoesDeRender } from '../utils'
+import { buscarCSS } from './utils/routesUtilities'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
@@ -22,7 +23,6 @@ router.use(express.json())
 
 router.use((req, res, next) => {
     const user = req.user as UsuarioAutenticado
-    console.log('usuarioAutenticado: ', user)
     if (!user) {
         res.redirect('/login')
     } else {
@@ -43,13 +43,29 @@ router.get('/cadastro', (req, res) => {
     res.render('clube/cadastro', options)
 })
 
-router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Clube>>, res) => {
-    const { idUsuario } = req.user as UsuarioAutenticado
-    const clubeInfo = req.body
-    await clubeServiceInstance.criarClube(
-        clubeInfo as Prisma.ClubeCreateInput,
-        { idUsuario: idUsuario } as UsuarioDadosPK)
-    res.send()
+router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Clube>>, res, next) => {
+    const usuario: UsuarioAutenticado | undefined = req.user
+    if (!req.user) {
+        res.redirect('/login')
+        return
+    }
+    try {
+        const dados = await validacaoServiceInstance.validarClubeDadosCriacao(req.body)
+        const idUsuario = Number(usuario?.idUsuario)
+        const clube = await clubeServiceInstance.criarClube(dados, {idUsuario})
+        res.redirect(`${req.baseUrl}/${clube.idClube}`)
+    } catch (error) {
+        const redirect = `${req.baseUrl}${req.path}`
+        if (error instanceof Error && error.name === 'ValidationError') {
+            res.redirect(400, redirect)
+            return
+        }
+        res.redirect(500, redirect)
+        if (esPrismaErro(error)) {
+            return
+        }
+        next(error)
+    }
 })
 
 router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'idClube'>>>, res) => {
@@ -114,9 +130,8 @@ router.post('/email', async (req, res) => {
     const { idClube, emailDestinatario } = req.body
     console.log(idClube, emailDestinatario)
     const { idUsuario, nome } = req.user as UsuarioAutenticado
-    const resultadoVerificacao = await clubeServiceInstance.verificarSeEstaRegistradoNoClube(Number(idClube), Number(idUsuario))
-    if (resultadoVerificacao === false ||
-        resultadoVerificacao[0].codRole !== RoleEnum.ADMIN) {
+    const usuarioFazParteDoClube = await clubeServiceInstance.verificarSeEstaRegistradoNoClube(Number(idClube), Number(idUsuario))
+    if (!usuarioFazParteDoClube) {
         console.log('algo deu errado')
         res.json({ status: 'Nao Autorizado' })
     } else {

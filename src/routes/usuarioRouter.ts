@@ -1,8 +1,13 @@
 import { Usuario } from '@prisma/client'
+import { randomBytes } from 'crypto'
 import { Request, Router } from 'express'
+import { esPrismaErro } from '../prisma/prisma'
+import { autenticacaoServiceInstance } from '../services/autenticacaoService'
+import clubeServiceInstance from '../services/clubeService'
 import usuarioServiceInstance from '../services/usuarioService'
+import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosOpcionaisDe, UsuarioRequestParams } from '../types/routes'
-import { preencherOpcoesDeRender, processaParams } from '../utils'
+import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 import { randomBytes } from 'crypto'
 import clubeServiceInstance from '../services/clubeService'
@@ -40,18 +45,27 @@ router.get('/cadastro', (req, res) => {
     res.render(`${_viewFolder}/cadastro`, opcoes)
 })
 
-router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Usuario>>, res) => {
+router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Usuario>>, res, next) => {
     try {
-        const dados = <Usuario>processaParams(req.body)
+        const dados = await validacaoServiceInstance.validarUsuarioDadosCriacao(req.body)
         dados.imagem = randomBytes(2)
         const usuario = await usuarioServiceInstance.criarUsuario(dados)
         res.redirect(`${req.baseUrl}/${usuario.idUsuario}`)
     } catch (error) {
-        res.redirect(500, `${req.baseUrl}${req.path}`)
+        const redirect = `${req.baseUrl}${req.path}`
+        if (error instanceof Error && error.name === 'ValidationError') {
+            res.redirect(400, redirect)
+            return
+        }
+        res.redirect(500, redirect)
+        if (esPrismaErro(error)) {
+            return
+        }
+        next(error)
     }
 })
 
-router.get('/editar/:idUsuario(\\d+)?', async (req: Request<UsuarioRequestParams>, res) => {
+router.get('/editar/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>, res, next) => {
     try {
         const idUsuario = req.params.idUsuario || (req.user as UsuarioAutenticado).idUsuario!
         const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
@@ -69,17 +83,31 @@ router.get('/editar/:idUsuario(\\d+)?', async (req: Request<UsuarioRequestParams
         }
     } catch (error) {
         res.redirect(500, 'back')
+        if (esPrismaErro(error)) {
+            return
+        }
+        next(error)
     }
 })
 
-router.post('/editar/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams, null, RequestDadosOpcionaisDe<Usuario>>, res) => {
+
+router.post('/editar/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams, null, RequestDadosOpcionaisDe<Usuario>>, res, next) => {
     try {
         const { idUsuario } = req.params
-        const dados = processaParams({ ...req.body, idUsuario }) as UsuarioDadosPK
+        const dados = await validacaoServiceInstance.validarUsuarioDadosEdicao(idUsuario, req.body)
         await usuarioServiceInstance.editarUsuario(dados)
         res.redirect(`${req.baseUrl}/${idUsuario}`)
     } catch (error) {
-        res.redirect(500, `${req.baseUrl}${req.path}`)
+        const redirect = `${req.baseUrl}${req.path}`
+        if (error instanceof Error && error.name === 'ValidationError') {
+            res.redirect(400, redirect)
+            return
+        }
+        res.redirect(500, redirect)
+        if (esPrismaErro(error)) {
+            return
+        }
+        next(error)
     }
 })
 
