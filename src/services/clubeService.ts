@@ -50,7 +50,7 @@ export class ClubeService {
     public async buscaDeClubesRelacionadosAoUsuario(
         this: ClubeService,
         usuario: UsuarioDadosPK,
-    ): Promise<any> {
+    ): Promise<Pick<Clube, 'idClube' | 'nome' | 'descricao'>[]> {
         return this.prisma.clube.findMany({
             select: {
                 idClube: true,
@@ -66,7 +66,7 @@ export class ClubeService {
             }
         })
             .then(clube => {
-                // ClubeService.logger.info(clube)
+                ClubeService.logger.debug(clube)
                 return clube
             })
             .catch(err => {
@@ -80,29 +80,20 @@ export class ClubeService {
         idClube: number,
         idUsuario: number
     ): Promise<boolean> {
-        const idClubeResultado = await this.prisma.clube.findFirst({
-            select: {
-                idClube: true
-            },
+        return this.prisma.membroDoClube.findUnique({
             where: {
-                membroDoClube: {
-                    some: {
-                        idUsuario: idUsuario,
-                        role: {
-                            codRole: RoleEnum.ADMIN
-                        }
-                    }
-                },
-
+                idClube_idUsuario_codRole: {
+                    codRole: RoleEnum.ADMIN,
+                    idClube: idClube,
+                    idUsuario: idUsuario
+                }
             }
         })
-        console.log(idClubeResultado)
-        if (!idClubeResultado ||
-            idClubeResultado.idClube !== idClube) {
-            return false
-        } else {
-            return true
-        }
+            .then(membro => membro !== null)
+            .catch(err => {
+                ClubeService.logger.error(err)
+                throw err
+            })
     }
 
 
@@ -116,7 +107,7 @@ export class ClubeService {
             }
         })
             .then(clube => {
-                // ClubeService.logger.info(clube)
+                ClubeService.logger.debug(clube)
                 return clube
             })
             .catch(err => {
