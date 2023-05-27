@@ -1,15 +1,16 @@
-import { Clube, Prisma } from '@prisma/client'
+import { Clube } from '@prisma/client'
 import express, { Request, } from 'express'
 import { esPrismaErro } from '../prisma/prisma'
 import { autenticacaoServiceInstance } from '../services/autenticacaoService'
 import clubeServiceInstance from '../services/clubeService'
 import emailServiceInstance from '../services/emailService'
-import { DadosClubeERoleValidacaoCodes, RoleEnum, StatusCodes } from '../types/enums'
+import { DadosClubeERoleValidacaoCodes, StatusCodes } from '../types/enums'
 import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
 import { UsuarioAutenticado } from '../types/services'
 import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
+import { createBlobInContainer } from '../services/blogStorageService'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
@@ -19,7 +20,6 @@ import { buscarCSS } from './utils/routesUtilities'
  */
 const router = express.Router()
 router.use(autenticacaoServiceInstance.authenticate('session'))
-router.use(express.json())
 
 router.use((req, res, next) => {
     const user = req.user as UsuarioAutenticado
@@ -52,7 +52,7 @@ router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe
     try {
         const dados = await validacaoServiceInstance.validarClubeDadosCriacao(req.body)
         const idUsuario = Number(usuario?.idUsuario)
-        const clube = await clubeServiceInstance.criarClube(dados, {idUsuario})
+        const clube = await clubeServiceInstance.criarClube(dados, { idUsuario })
         res.redirect(`${req.baseUrl}/${clube.idClube}`)
     } catch (error) {
         const redirect = `${req.baseUrl}${req.path}`
@@ -141,6 +141,46 @@ router.post('/email', async (req, res) => {
         } catch (e) {
             console.error(e)
         }
+    }
+})
+
+router.post('/edicao-conteudo', async (req, res, next) => {
+    try {
+        const { idUsuario } = req.user as UsuarioAutenticado
+        const { id: idClube, base64, ...clubeDados } = req.body
+
+        if (!idUsuario) {
+            res.redirect(StatusCodes.UNAUTHORIZED, '/login')
+            return
+        } else if (!base64 && !clubeDados) {
+            res.status(StatusCodes.BAD_REQUEST).json({ status: StatusCodes.BAD_REQUEST, mensagem: 'Não foram enviados para atualizar o clube' })
+            return
+        }
+
+        let blobUrl = ''
+        if (base64) {
+            const regex = /^data:(image\/.+);base64,(.+)$/
+            const fileMatch = base64.match(regex)!
+            const [_, fileType, fileData] = fileMatch
+            console.log(fileMatch)
+            blobUrl = await createBlobInContainer(fileType, fileData, `_${_dirBase}${idClube}`)
+        }
+
+        const clubeDadosAtualizados = {
+            idClube,
+            ...clubeDados
+        }
+
+        if (blobUrl.length > 0)
+            clubeDadosAtualizados['imagemUrl'] = blobUrl
+
+        clubeServiceInstance.atualizarInformacaoDoClube(clubeDadosAtualizados, { idUsuario: idUsuario || 0 })
+
+
+        res.status(StatusCodes.OK).json({info: 'atualização em andamento'})
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({info: 'falha ao atualizar dados'})
+        next(error)
     }
 })
 

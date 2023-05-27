@@ -13,8 +13,8 @@ class EmailService {
     #azureEmailCommsKey: AzureKeyCredential
 
     constructor() {
-        this.#azureEmailCommsEndpoint = config.AZURE_EMAIL_COMMS_SERVICE_ENDPOINT
-        this.#azureEmailCommsKey = new AzureKeyCredential(config.AZURE_EMAIL_COMMS_SERVICE_KEY)
+        this.#azureEmailCommsEndpoint = config.ENDPOINT_AZURE_EMAIL_COMMUNICATION_SERVICE
+        this.#azureEmailCommsKey = new AzureKeyCredential(config.CHAVE_AZURE_EMAIL_COMMUNICATION_SERVICE)
         this.#emailClient = new EmailClient(this.#azureEmailCommsEndpoint, this.#azureEmailCommsKey)
         this.#POLLER_TEMPO_ESPERA = 10
         this.#dominioEmailApp = 'DoNotReply@c7bb72eb-d9ca-4e21-92f2-823432e90a58.azurecomm.net'

@@ -1,6 +1,6 @@
 import { Clube, MembroDoClube, Prisma, PrismaClient } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
-import { PropsExigidosOutrasOpcional, UsuarioDadosPK } from '../types/services'
+import { ClubeDadosPK, PropsExigidosOutrasOpcional, UsuarioDadosPK } from '../types/services'
 import { RoleEnum, DadosClubeERoleValidacaoInfo, DadosClubeERoleValidacaoCodes } from '../types/enums'
 import logger from '../logger'
 
@@ -15,6 +15,7 @@ interface DadosClubeERole {
     telegram: string | null;
     redesSociais: string | null;
     admin: boolean | null;
+    idClube: number | null;
 }
 
 /**
@@ -60,6 +61,47 @@ export class ClubeService {
             })
     }
 
+    public async atualizarInformacaoDoClube(
+        this: ClubeService,
+        clube: ClubeDadosPK,
+        moderador: UsuarioDadosPK,
+    ): Promise<boolean> {
+        try {
+            const usuarioTemStatusAdmin = await this.prisma.membroDoClube.findUnique({
+                where: {
+                    idClube_idUsuario_codRole: {
+                        idClube: clube.idClube,
+                        idUsuario: moderador.idUsuario,
+                        codRole: RoleEnum.ADMIN
+                    }
+                }
+            })
+
+            if (!usuarioTemStatusAdmin) {
+                ClubeService.logger.error('Usuário não admin não pode sobrescrever dados do clube.')
+                throw new Error('Não é admin!')
+            }
+
+            console.log(clube)
+
+            const updateEmClube = await this.prisma.clube.update({
+                where: { idClube: clube.idClube },
+                data: clube
+            })
+
+            console.log('update feito:', updateEmClube)
+
+            if (!updateEmClube) {
+                throw new Error('Dados não foram atualizados')
+            } else {
+                return true
+            }
+        } catch (err) {
+            ClubeService.logger.error(err)
+            return false
+        }
+    }
+
     public async buscaDeClubesRelacionadosAoUsuario(
         this: ClubeService,
         usuario: UsuarioDadosPK,
@@ -97,16 +139,17 @@ export class ClubeService {
             CALL SP_SELECT_DADOS_CLUBE_E_ROLE_SE_USUARIO_FOR_REGISTRADO(${idClube}, ${idUsuario})`
         const objetoResultadoMapeado: DadosClubeERole[] = objetoResultado.map(o => {
             return {
-                nome: o.f0,
-                subtitulo: o.f1 || null,
-                descricao: o.f2 || null,
-                imagem: o.f3 || null,
-                imagemUrl: o.f4 || null,
-                site: o.f5 || null,
-                whatsapp: o.f6 || null,
-                telegram: o.f7 || null,
-                redesSociais: o.f8 || null,
-                admin: this.SeNaoNuloVerificarRole(o)
+                idClube: o.f0,
+                nome: o.f1,
+                subtitulo: o.f2 || null,
+                descricao: o.f3 || null,
+                imagem: o.f4 || null,
+                imagemUrl: o.f5 || null,
+                site: o.f6 || null,
+                whatsapp: o.f7 || null,
+                telegram: o.f8 || null,
+                redesSociais: o.f9 || null,
+                admin: this.SeNaoNuloVerificarRole(o),
             }
         })
 
@@ -123,10 +166,10 @@ export class ClubeService {
     }
 
     private SeNaoNuloVerificarRole(o: any): boolean | null {
-        if (!o.f9) {
+        if (!o.f10) {
             return null
         } else {
-            return o.f9 === 1
+            return o.f10 === 1
         }
     }
 

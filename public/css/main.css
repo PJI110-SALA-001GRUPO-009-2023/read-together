@@ -28,6 +28,17 @@ body.bg-gray-200 {
     box-shadow: 0 0 4px #3f36f6;
 }
 
+.naked-btn {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+.naked-btn.small-text {
+    font-size: 0.75rem;
+}
+
 #btn-lilas {
     align-self: center;
 }
@@ -46,26 +57,95 @@ body.bg-gray-200 {
     color: var(--lilas);
 }
 
+
+i.representante-edicao:not(.editavel) {
+    display: none;
+}
+
+i.representante-edicao.editavel {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 10%;
+    transition: transform ease-in-out 0.3s;
+}
+
+i.representante-edicao.editavel:hover {
+    transform: scale(1.6);
+}
+
+.can-edit {
+    position: relative;
+}
+
+.can-edit.editavel:not(img):not(label):not(i):after {
+    content: "";
+    width: 0%;
+    height: 1px;
+    display: block;
+    border: none;
+    position: absolute;
+    bottom: 0;
+}
+
+.can-edit.editavel:not(img):not(label):not(i):after {
+    animation: bottom-bar-move 2.5s both;
+}
+
+@keyframes bottom-bar-move {
+    0%, 100% {
+        border-bottom: 2px solid blue;
+        left: 0;
+    }
+
+    50% {
+        width: 20%;
+        border-bottom: 2px solid blue;
+        left: 80%;
+    }
+
+}
+
 /*<Icons>*/
-i.circle-icon {
+i.circle-icon,
+i.circle-fill-icon {
     width: 1em;
+}
+
+i.save-icon {
+    width: 1.35em;
+}
+
+i.cancel-icon,
+i.gear-icon,
+i.gear-icon-active {
+    width: 1.5em;
+}
+
+i.circle-icon {
     content: url('/midia/circle.svg');
 }
 
-i.gear-icon {
-    cursor: pointer;
-    width: 1.5em;
-    content: url('/midia/gear.svg')
+i.save-icon {
+    content: url('/midia/save.svg');
+}
+
+i.cancel-icon {
+    content: url('/midia/cancel.svg');
+}
+
+i.gear-icon,
+i.gear-icon-active {
+    content: url('/midia/gear.svg');
+}
+
+button:has(> i.gear-icon-active) {
+    cursor: not-allowed;
 }
 
 i.gear-icon:hover {
     background-color: gainsboro;
     border-radius: 40%;
-}
-
-i.circle-fill-icon {
-    width: 1em;
-    content: url('/midia/circle-fill.svg');
 }
 
 .trash-can-icon-toggle {

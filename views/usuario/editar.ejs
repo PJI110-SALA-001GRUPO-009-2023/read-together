@@ -2,37 +2,27 @@
     <!-- ROW 1 -->
     <div class="row" id="row1a"> <!-- Perfil -->
         <div class="col-lg-4">
-            <div class="card">
-                <img src="/midia/imagens/Logos/logo-rt-neg-quad.png" class="foto-perfil" alt="...">
-                <section class="card-body">
-                    <h4 class="card-title">
-                        Nome Usuário
-                    </h4>
-                    <h5 class="ocupacao">
-                        Ocupação/Formação
-                    </h5>
-                    <i class="bi bi-geo-alt">
-                        Localização
-                    </i>
-                    <div class="linha-bottom"></div>
-                    <p class="card-text">Descrição:</p>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex culpa amet
-                        consequuntur unde ullam, dolor officia enim explicabo molestiae et alias placeat
-                    </p>
-                </section>
-                <section class="w-100">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <a href="#" class="card-link">Link</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="#" class="card-link">Link</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="#" class="card-link">Link</a>
-                        </li>
-                    </ul>
-                </section>
+            <div class="card position-relative overview-pagina">
+                <%- include('../shared/_modoEdicao') %>
+                    <figure id="foto-perfil" class="m-0 p-0 position-relative">
+                        <img class="img-fluid can-edit"
+                            src="<%-usuario.imagemUrl || '/midia/imagens/kaffe.jpg'%>">
+                        <div class="position-absolute w-100 h-100">
+                            <label for="imageUpload"><i class="bi bi-pencil-square representante-edicao"></i></label>
+                            <input class="d-none" type="file" accept=".png, .jpg, .jpeg" id="imageUpload"
+                                name="imageUpload">
+                                <input type="hidden" name="idClube" value="<%-usuario.idUsuario%>">
+                        </div>
+                    </figure>
+                    <section class="card-body">
+                        <h4 data-name="nome" class="card-title mb-2 p-1 can-edit position-relative" contenteditable="false">
+                            <%- usuario.nome %>
+                        </h4>
+                        <span class="d-block small p-1 mb-1">Descrição:</span>
+                        <p data-name="bio" class="card-text p-1 can-edit position-relative" contenteditable="false">
+                            <%- usuario.bio %>
+                        </p>
+                    </section>
             </div>
         </div>
         <div class="col-lg-4">
@@ -45,9 +35,6 @@
                         <li class="list-group-item">...</li>
                     </ul>
                 </div>
-                <div class="btn-card">
-                    <button type="button" class="btn btn-outline-primary">Marcar reunião.</button>
-                </div>
             </div>
             <div class="card"> <!-- esquete -->
                 <h4>Enquetes:</h4>
@@ -58,37 +45,32 @@
                         <li class="list-group-item">...</li>
                     </ul>
                 </div>
-                <div class="btn-card">
-                    <button type="button" class="btn btn-outline-primary">Criar uma enquete.</button>
-                </div>
             </div>
         </div>
         <div class="col-lg-4">
 
 
             <div class="container-clubes"> <!-- clubes -->
-                <div class="header-clubes-btn">
-                    <h5>Meus Clubes:</h5>
+                <div class="card">
+                    <h5 class="text-center">Meus Clubes:</h5>
                     <a class="btn btn-outline-primary" href="/clube/cadastro">Crie seu clube!</a>
                 </div>
 
                 <% clubes.forEach(clube=> { %>
 
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                            <div class="col-md-4 align-self-center">
-                                <img src="/midia/imagens/Logos/logo-rt-neg-quad-175px.png"
-                                    class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <label for=""><%- clube.nome %></label>
-                                    </h5>
-                                    <p class="card-text">
-                                        <label for=""><%- clube.descricao %></label>
-                                    </p>
-                                </div>
+                    <div class="card mb-3" style="max-width: 400px;">
+                        <div class="w-100">
+                            <figure id="card-img-clipped">
+                                <img src="/midia/imagens/Logos/logo-rt-neg-quad.png" class="w-100">
+                            </figure>
+                            <div class="card-body px-0 py-3">
+                                <h4 class="card-title fs-6">
+                                    <%- clube.nome %>
+                                </h4>
+                                <p class="card-text small text-truncate descricao-truncate mb-1" aria-expanded="false">
+                                    <%- clube.descricao %>
+                                </p>
+                                <button class="d-block btn-link btn-ler-mais">« Ler mais »</button>
                             </div>
                         </div>
                         <a class="btn btn-outline-primary" id="btn-clube" href="<%-`/clube/${clube.idClube}`%>">
@@ -98,15 +80,11 @@
 
                     <% }) %>
 
-                        <div class="linha-bottom"></div>
-
-                        <div class="card mb-3" style="max-width: 540px;">
-                            <label for="">...</label>
-                        </div>
-
             </div>
 
         </div>
 
     </div>
 </div>
+<script src="/scripts/lerMaisUtility.js" type="module"></script>
+<script src="/scripts/editorInformacoesCard.js" type="module"></script>

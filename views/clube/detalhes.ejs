@@ -1,47 +1,31 @@
 <div class="container h-100 pt-4" style="margin-top: 20px;">
     <div class="row">
         <div class="col-lg-4">
-            <div id="overview-clube" class="card position-relative" style="margin-right: 20px; margin-left: 10px">
+            <div class="card position-relative overview-pagina" style="margin-right: 20px; margin-left: 10px">
                 <% if (clubeData.admin) { %>
-                    <button id="admin-edicao" class="position-absolute align-self-end m-0 p-0 d-flex border border-none">
-                        <i class="gear-icon"></i>
-                    </button>
+                    <%- include('../shared/_modoEdicao') %>
                     <% } %>
-                        <figure class="m-auto mb-2 foto-clube">
-                            <img class="img-fluid rounded-circle" src="/midia/imagens/kaffe.jpg" alt="">
+                        <figure class="m-auto mb-2 foto-perfil-clube position-relative">
+                            <img class="img-fluid rounded-circle can-edit" src="<%-clubeData.imagemUrl || '/midia/imagens/kaffe.jpg'%>" alt="">
+                            <div class="top-0 position-absolute w-100 h-100">
+                                <label for="imageUpload"><i class="bi bi-pencil-square representante-edicao"></i></label>
+                                <input class="d-none" type="file" accept=".png, .jpg, .jpeg" id="imageUpload" name="imageUpload">
+                                <input type="hidden" name="idClube" value="<%-clubeData.idClube%>">
+                            </div>
                         </figure>
                         <section class="card-body w-100">
-                            <h4 class="card-title">
+                            <h4 data-name="nome" class="card-title can-edit">
                                 <%- clubeData.nome %>
                             </h4>
-                            <h5 class="card-subtitle mb-2 text-muted">
+                            <h5 data-name="subtitulo" class="card-subtitle mb-2 text-muted can-edit">
                                 <%- clubeData.subtitulo %>
                             </h5>
-                            <p id="descricao" class="card-text text-truncate" aria-expanded="false">
+                            <p data-name="descricao" class="card-text text-truncate descricao-truncate can-edit mb-1" aria-expanded="false">
                                 <%- clubeData.descricao %>
-                                    <button id="btn-ler-mais" class="d-block btn-link">« Ler mais »</button>
                             </p>
-                            <section class="w-100">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        <a href="<%-clubeData.site%>" class="card-link">Site</a>
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        <a href="<%-clubeData.whatsapp%>" class="card-link">WhatsApp</a>
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        <a href="<%-clubeData.telegram%>" class="card-link">Telegram</a>
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        <p class="m-0">
-                                            <% clubeData['redesSociais'].split('\n').forEach(href=> { %>
-                                                <a class="d-block card-link text-truncate m-0"
-                                                    href=<%-`${href}`%>><%-`${href}`%></a>
-                                                <% }) %>
-                                        </p>
-
-                                    </li>
-                                </ul>
+                            <button class="d-block btn-link btn-ler-mais">« Ler mais »</button>
+                            <section class="w-100 mt-2">
+                                <%- include('./partials/_listaLinks') %>
                             </section>
                         </section>
             </div>
@@ -56,7 +40,7 @@
                     data-bs-toggle="modal" data-bs-target="#enqueteModal">
                     Enquetes
                 </button>
-                <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary" type="button"
+                <button class="line rounded mb-2 btn btn-lilas btn-secondary" type="button"
                     data-bs-toggle="modal" data-bs-target="#membrosModal">
                     Membros
                 </button>
@@ -68,33 +52,7 @@
         </div>
     </div>
 </div>
-<script>
-        (function adicionarFuncionalidadeLerMais() {
-            const btnLerMais = document.querySelector("button#btn-ler-mais")
-            btnLerMais.addEventListener('click', function (e) {
-                const paragDescricao = document.querySelector("p#descricao")
-                const textoEstaEscondido = paragDescricao.getAttribute('class').includes('text-truncate')
-                    ? true
-                    : false
-                if (textoEstaEscondido) {
-                    btnLerMais.textContent = '» guardar «'
-                    paragDescricao.setAttribute('class', paragDescricao.getAttribute('class').replace('text-truncate', ''))
-                    paragDescricao.setAttribute('aria-expanded', 'true')
-                } else {
-                    btnLerMais.textContent = '« Ler mais »'
-                    paragDescricao.setAttribute('class', `${paragDescricao.getAttribute('class')} text-truncate`)
-                    paragDescricao.setAttribute('aria-expanded', 'false')
-                }
-            })
-        })()
-</script>
-
+<script src="/scripts/lerMaisUtility.js"></script>
 <% if (clubeData.admin) { %>
-<script>
-    try {
-
-    } catch(err) {
-        console.error(err)
-    }
-</script>
+    <script src="/scripts/editorInformacoesCard.js"></script>
 <% } %>

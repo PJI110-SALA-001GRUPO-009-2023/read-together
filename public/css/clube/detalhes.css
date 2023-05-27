@@ -2,22 +2,19 @@ section#clube-info-overview {
     height: fit-content;
 }
 
-button#btn-ler-mais {
-    border: none;
-    background-color: transparent;
-    font-size: 0.75rem;
-}
-
 .card{
     padding: 20px;
     align-items: center;
 }
 
-.foto-clube {
+.foto-perfil-clube {
     border-radius: 200px;
     width: 200px;
 }
 
+.can-edit:not(img) {
+    padding: 0.25rem;
+}
 
 section#historico-de-leitura ol a:hover {
     text-shadow: 0 0 0.1px;

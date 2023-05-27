@@ -1,4 +1,13 @@
+/**
+ * Classe responsável pela gestão da leitura.
+ * @class
+ */
 class LeituraManager {
+
+    /**
+ * Cria uma instância da classe LeituraManager.
+ * @constructor
+ */
     constructor() {
         this.selectElement = document.querySelector('select')
         this.container = document.querySelector('#lista-leituras')
@@ -6,6 +15,12 @@ class LeituraManager {
         this.leituras = null
     }
 
+    /**
+     * Obtém as leituras existentes.
+     * @public
+     * @async
+     * @returns {Promise.<Array.<Object>>} Leituras existentes.
+     */
     async obterLeiturasExistentes() {
         try {
             const response = await fetch('/clube/leituras')
@@ -19,7 +34,12 @@ class LeituraManager {
         }
     }
 
-    async buildLeituraStorage() {
+    /**
+     * Constrói o armazenamento de leituras.
+     * @public
+     * @async
+     */
+    async construirOArmazenamentoDeLeituras() {
         if (!localStorage.getItem('leituras')) {
             localStorage.clear()
             this.leituras = await this.obterLeiturasExistentes()
@@ -41,6 +61,11 @@ class LeituraManager {
         })
     }
 
+    /**
+     * Cria a lista de leituras a ser exibida.
+     * @public
+     * @param {number} qtddParaMostrar - Quantidade de leituras a serem exibidas por página.
+     */
     criarListaDeLeituras(qtddParaMostrar) {
         let htmlString = ''
         const leiturasDivididasPorPaginaKeys = Object.keys(localStorage).filter(val => val.includes(`${qtddParaMostrar}`)).sort()
@@ -51,7 +76,11 @@ class LeituraManager {
         }
         this.container.innerHTML = htmlString
     }
-
+    
+    /**
+     * Inicializa o gerenciador de leituras.
+     * @public
+     */
     init() {
         this.selectElement.addEventListener('change', (e) => {
             this.qtddSelecionada = e.target.children[e.target.selectedIndex].value
@@ -59,13 +88,11 @@ class LeituraManager {
         })
 
         this.qtddSelecionada = this.selectElement.children[this.selectElement.selectedIndex].value
-        this.buildLeituraStorage()
+        this.construirOArmazenamentoDeLeituras()
         this.criarListaDeLeituras(this.qtddSelecionada)
     }
 }
 
-// Usage
-const leituraManager = new LeituraManager()
-window.addEventListener('load', () => {
-    leituraManager.init()
+document.addEventListener('DOMContentLoaded', () => {
+    new LeituraManager().init()
 })

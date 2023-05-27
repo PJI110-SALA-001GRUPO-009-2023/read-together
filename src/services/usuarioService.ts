@@ -44,8 +44,17 @@ export class UsuarioService {
             })
     }
 
-    public async buscarUsuarioPorId(this: UsuarioService, usuario: UsuarioDadosPK): Promise<Usuario | null> {
+    public async buscarUsuarioPorId(this: UsuarioService, usuario: UsuarioDadosPK)
+        : Promise<Omit<Usuario, 'senha' | 'email'> | null> {
         return this.prisma.usuario.findUnique({
+            select: {
+                idUsuario: true,
+                nome: true,
+                dataNascimento: true,
+                bio: true,
+                imagem: true,
+                imagemUrl: true,
+            },
             where: {
                 idUsuario: usuario.idUsuario
             }
@@ -74,6 +83,30 @@ export class UsuarioService {
                 UsuarioService.logger.error(err)
                 throw err
             })
+    }
+
+    public async atualizarInformacaoDoPerfil(
+        this: UsuarioService,
+        usuario: UsuarioDadosPK)
+        : Promise<boolean> {
+        try {
+            const { idUsuario, ...usuarioDados } = usuario
+            const updateEmUsuario = await this.prisma.usuario.update({
+                where: { idUsuario: idUsuario },
+                data: usuarioDados
+            })
+
+            console.log('update feito:', updateEmUsuario)
+
+            if (!updateEmUsuario) {
+                throw new Error('Dados não foram atualizados')
+            } else {
+                return true
+            }
+        } catch (err) {
+            UsuarioService.logger.error(err)
+            return false
+        }
     }
 }
 
