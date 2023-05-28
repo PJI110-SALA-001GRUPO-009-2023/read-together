@@ -1,0 +1,29 @@
+version: '2.17.2'
+services:
+  db:
+    image: mysql:8.0-debian
+    command: --init-file /data/application/init.sql
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./data/application/init-db.sql:/data/application/init.sql
+    ports:
+      - 3306:3306
+    networks:
+      - readtogheter
+
+  app:
+    image: read-together-app:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - readtogheter
+
+
+volumes:
+  db_data:
+
+networks:
+  readtogheter:
+    driver: bridge
