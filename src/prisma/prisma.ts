@@ -1,3 +1,4 @@
+import * as config from '../config'
 import { PrismaClient } from '@prisma/client'
 import { PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime'
 import logger from '../logger'
@@ -5,11 +6,19 @@ import logger from '../logger'
 /**
  * Instância do PrismaClient para uso global
  */
-const prismaInstance = new PrismaClient({log: [
-    {level: 'info', emit:'event'},
-    {level: 'error', emit:'event'}
-]})
-const loggerPrisma = logger.child({contexto: PrismaClient.name})
+const prismaInstance = new PrismaClient({
+    log: [
+        { level: 'info', emit: 'event' },
+        { level: 'error', emit: 'event' }
+    ],
+    datasources: {
+        db: {
+            url: config.DATABASE_URL
+        }
+    }
+})
+
+const loggerPrisma = logger.child({ contexto: PrismaClient.name })
 
 prismaInstance.$on('info', (info) => {
     loggerPrisma.info(info.message)
