@@ -184,4 +184,34 @@ router.post('/edicao-conteudo', async (req, res, next) => {
     }
 })
 
+
+router.get('/:idClube(\\d+)/reuniao/:idReuniao(\\d+)', async (req, res, next) => {
+    const { idUsuario } = req.user as UsuarioAutenticado
+    const { idClube } = req.params
+
+    const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
+        Number(idClube), Number(idUsuario)
+    )
+
+    if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
+        if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
+            res.redirect('/404')
+        } else {
+            res.redirect(StatusCodes.UNAUTHORIZED, 'back')
+        }
+        return
+    }
+
+    const { nome, subtitulo } = DTOValidacaoClubeERegistroEmClube[0]
+
+    const options = preencherOpcoesDeRender({
+        titulo: 'Reuniao - Leitura do Mês',
+        diretorioBase: _dirBase,
+        cssCustomizados: buscarCSS('reuniao', _dirBase)
+    })
+
+    res.render('clube/reuniao', { ...options, clubeData: {nome, subtitulo, idClube} })
+
+})
+
 export default router
