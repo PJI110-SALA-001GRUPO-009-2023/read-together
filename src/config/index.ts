@@ -1,8 +1,10 @@
 /* Deve vir no incio para permimtir debugs */
 import * as dotenv from 'dotenv'
-dotenv.config()
 
 import * as utils from '../utils'
+import path from 'path'
+
+dotenv.config({path: path.resolve(process.cwd(), '.env.localp') })
 
 export const NODE_PORT: number = Number(process.env.NODE_PORT) || 8080
 export const NODE_ENV: string = process.env.NODE_ENV || 'development'
