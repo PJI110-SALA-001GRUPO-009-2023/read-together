@@ -1,0 +1,57 @@
+<div class="container-sm">
+    <form method="post" class="login-rt text-center">
+        <fieldset class="row m-auto">
+            <div class="form-floating mb-3 p-0">
+                <input name="email" type="email" class="form-control border border-primary w-100" id="email"
+                    placeholder=" Digite seu E-mail:" required>
+                <label for="email">Digite seu E-mail:</label>
+            </div>
+            <div class="form-floating mb-3 p-0">
+                <input name="nova-senha" type="password" class="form-control border border-primary w-100"
+                    id="new-password" placeholder=" Digite sua Senha:" required>
+                <label for="password">Digite sua nova senha:</label>
+            </div>
+            <div class="form-floating mb-3 p-0">
+                <input name="confirmar-nova-senha" type="password" class="form-control border border-primary w-100"
+                    id="new-password-confirm" placeholder=" Digite sua Senha:" required>
+                <label for="password">Confirme sua nova senha:</label>
+            </div>
+        </fieldset>
+        <fieldset class="row-cols-2 text-center">
+            <button type="button" class="btn col-6" id="btn-lilas">Recuperar Senha</button>
+        </fieldset>
+    </form>
+</div>
+<script>
+    document.querySelector('button').addEventListener('click', (e) => {
+
+        const jsonBody = Array.from(document.querySelectorAll('input')).reduce((res, input) => {
+            const name = input.getAttribute('name')
+            const value = input.value
+            res[name] = value
+            return res;
+        }, {})
+
+        if (jsonBody['nova-senha'] !== jsonBody['confirmar-nova-senha']) {
+            alert('Senhas fornecidas não são iguais')
+            return
+        }
+
+        fetch('recuperar-senha', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: jsonBody.email, novaSenha: jsonBody['nova-senha'] })
+        })
+            .then(res => {
+                if (res.redirected) {
+                    location.assign(res.url)
+                }
+
+                return res.json()
+            })
+            .then(json => console.log(json))
+            .catch(err => console.error(err))
+    })
+</script>

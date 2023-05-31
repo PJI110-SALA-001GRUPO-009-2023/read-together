@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { ViewOptionsInterface } from '../types/routes'
 import { join } from 'path'
+import { randomUUID } from 'crypto'
 
 export const UM_DIA_EM_MS = 86400000
 
@@ -83,4 +84,9 @@ function converteStringNaoVaziaEmData(s: string): Date | null {
 export function limpaCamposVazios(params: object): object {
     const entradas = Object.entries(params).filter(([chave, valor]) => valor !== undefined || valor !== null)
     return Object.fromEntries(entradas)
+}
+
+export function UUIDValido(uuid: string): boolean {
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    return uuidPattern.test(uuid)
 }

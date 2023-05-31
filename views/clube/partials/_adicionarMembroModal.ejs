@@ -18,7 +18,7 @@
                                 <input class="d-none" id="idClube" type="number" value="<%-idClube%>">
                                 <label for="inputEmail" class="col-form-label d-inline">Email</label>
                                 <div class="flex-grow-1 mx-sm-3">
-                                    <input id="inputEmail" class="form-control" type="email">
+                                    <input id="inputEmail" class="form-control" type="email" required>
                                 </div>
                                 <div>
                                     <button id="btnConvidar" class="btn btn-primary">Enviar convite</button>
@@ -30,17 +30,9 @@
                         <h5 class="fs-4 mb-3">Lista de Membros</h5>
                         <section id="lista-de-membros" class="position-relative">
                             <ul class="m-0 p-0 h-75">
-                                <% membros.forEach((membro, idx)=> { %>
+                                <% membros.forEach(membro=> { %>
                                     <li class="d-flex w-100 p-2 fs-5 justify-content-between">
-                                        <a href="#" class="d-inline lh-lg">
-                                            <i
-                                                class="circle<%- idx % 2 !== 0 ? '' : '-fill'%>-icon mx-lg-1 lh-base"></i>
-                                            <%- membro %>
-                                        </a>
-                                        <div class="btn-group d-inline" role="group" aria-label="Promover ou banir">
-                                            <button class="btn btn-outline-success">Promover</button>
-                                            <button class="btn btn-outline-danger">Banir</button>
-                                        </div>
+                                        <%- membro.nome %>
                                     </li>
                                     <% }) %>
                             </ul>
@@ -56,10 +48,16 @@
     formConvite.addEventListener('submit', async (e) => {
         e.preventDefault()
 
-        const jsonData = JSON.stringify({
+        const dados = {
             idClube: formConvite.querySelector('#idClube').value,
             emailDestinatario: formConvite.querySelector('#inputEmail').value
-        })
+        }
+
+        if (dados.emailDestinatario === '') {
+            return
+        }
+
+        const jsonData = JSON.stringify(dados)
 
         try {
             const res = await fetch('/clube/email', {
@@ -69,10 +67,40 @@
                 },
                 body: jsonData
             })
-            console.log(res)
-            alert('Enviado!')
+            exibirMensagemEnvio()
         } catch (err) {
             throw new Error(err)
         }
     })
+
+    function exibirMensagemEnvio() {
+        const alertEnviando = document.querySelector('#enviando')
+        if (alertEnviando) {
+            setTimeout(function () {
+                alertEnviando.parentNode.removeChild(alertEnviando);
+              }, 3000);
+        } else {
+            document.querySelector('#formConvidar').after(criarDivAlerta())
+        }
+    }
+
+    function criarDivAlerta() {
+        var div = document.createElement('div');
+        div.className = 'alert alert-info alert-dismissible fade';
+        div.setAttribute('role', 'alert');
+        div.id = 'enviando';
+
+        var message = document.createTextNode('Enviando o convite.');
+
+        var closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close';
+        closeButton.setAttribute('data-bs-dismiss', 'alert');
+        closeButton.setAttribute('aria-label', 'Close');
+
+        div.appendChild(message);
+        div.appendChild(closeButton);
+
+        return div
+      }
 </script>

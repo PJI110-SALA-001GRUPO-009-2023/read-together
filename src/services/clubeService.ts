@@ -1,6 +1,6 @@
-import { Clube, MembroDoClube, Prisma, PrismaClient } from '@prisma/client'
+import { Clube, MembroDoClube, Prisma, PrismaClient, StatusEspera, Usuario } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
-import { ClubeDadosPK, PropsExigidosOutrasOpcional, UsuarioDadosPK } from '../types/services'
+import { ClubeDadosPK, UsuarioDadosPK } from '../types/services'
 import { RoleEnum, DadosClubeERoleValidacaoInfo, DadosClubeERoleValidacaoCodes } from '../types/enums'
 import logger from '../logger'
 
@@ -31,9 +31,11 @@ export class ClubeService {
     }
 
     /**
-     * Armazena novo clube no banco e adiciona usuário como moderador
-     * @param moderador Apenas PK é necessária, restante é ignorado
-     */
+ * Armazena novo clube no banco e adiciona usuário como moderador
+ * @param {Prisma.ClubeCreateInput} clube - Dados do clube a ser criado
+ * @param {UsuarioDadosPK} moderador - Apenas PK é necessária, restante é ignorado
+ * @returns {Promise<Clube>} - O clube criado
+ */
     public async criarClube(
         this: ClubeService,
         clube: Prisma.ClubeCreateInput,
@@ -61,6 +63,12 @@ export class ClubeService {
             })
     }
 
+    /**
+ * Atualiza informações do clube
+ * @param {ClubeDadosPK} clube - Dados do clube a ser atualizado
+ * @param {UsuarioDadosPK} moderador - Moderador do clube
+ * @returns {Promise<boolean>} - Indica se a atualização foi bem-sucedida
+ */
     public async atualizarInformacaoDoClube(
         this: ClubeService,
         clube: ClubeDadosPK,
@@ -102,6 +110,11 @@ export class ClubeService {
         }
     }
 
+    /**
+ * Busca clubes relacionados ao usuário
+ * @param {UsuarioDadosPK} usuario - Dados do usuário
+ * @returns {Promise<Pick<Clube, 'idClube' | 'nome' | 'descricao'>>} - Clubes relacionados ao usuário
+ */
     public async buscaDeClubesRelacionadosAoUsuario(
         this: ClubeService,
         usuario: UsuarioDadosPK,
@@ -130,6 +143,12 @@ export class ClubeService {
             })
     }
 
+    /**
+ * Obtém dados do clube e da role do usuário, se existir clube e usuário registrado
+ * @param {number} idClube - ID do clube
+ * @param {number} idUsuario - ID do usuário
+ * @returns {Promise<Array<DadosClubeERole> | DadosClubeERoleValidacaoCodes>>} - Dados do clube e da role do usuário, ou código de validação
+ */
     public async obterDadosClubeRoleSeExistiremClubeUsuario(
         this: ClubeService,
         idClube: number,
@@ -173,6 +192,12 @@ export class ClubeService {
         }
     }
 
+    /**
+    * Verifica se o usuário está registrado no clube como administrador
+    * @param {number} idClube - ID do clube
+    * @param {number} idUsuario - ID do usuário
+    * @returns {Promise<boolean>} - Indica se o usuário está registrado no clube
+    */
     public async verificarSeEstaRegistradoNoClube(
         this: ClubeService,
         idClube: number,
@@ -194,7 +219,11 @@ export class ClubeService {
             })
     }
 
-
+    /**
+     * Busca clube pelo ID
+     * @param {number} idClube - ID do clube
+     * @returns {Promise<Clube | null>} - Clube encontrado ou null
+     */
     public async buscaPorId(
         this: ClubeService,
         idClube: number,
@@ -212,6 +241,34 @@ export class ClubeService {
                 ClubeService.logger.error(err)
                 throw err
             })
+    }
+
+    /**
+     * Busca usuários membros do clube (exceto pelo admin)
+     * @param {number} idUsuario - ID do usuário
+     * @param {number} idClube - ID do clube
+     * @returns {Promise<Pick<Usuario, 'nome'>>} - Usuários membros do clube
+     */
+    public async buscarUsuariosMembrosDoClube(
+        this: ClubeService,
+        idUsuario: number,
+        idClube: number)
+        : Promise<Pick<Usuario, 'nome'>[]> {
+        return await this.prisma.usuario.findMany({
+            select: {
+                nome: true
+            },
+            where: {
+                membroDoClube: {
+                    some: {
+                        AND: [
+                            { idClube: idClube },
+                            { NOT: { idUsuario: idUsuario } }
+                        ]
+                    }
+                }
+            }
+        })
     }
 }
 

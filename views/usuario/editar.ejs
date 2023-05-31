@@ -4,7 +4,7 @@
         <div class="col-lg-4">
             <div class="card position-relative overview-pagina">
                 <%- include('../shared/_modoEdicao') %>
-                    <figure id="foto-perfil" class="m-0 p-0 position-relative">
+                    <figure id="overview-figure" class="m-0 p-0 position-relative">
                         <img class="img-fluid can-edit"
                             src="<%-usuario.imagemUrl || '/midia/imagens/kaffe.jpg'%>">
                         <div class="position-absolute w-100 h-100">
@@ -14,7 +14,7 @@
                                 <input type="hidden" name="idClube" value="<%-usuario.idUsuario%>">
                         </div>
                     </figure>
-                    <section class="card-body">
+                    <section id="overview-section" class="card-body w-100">
                         <h4 data-name="nome" class="card-title mb-2 p-1 can-edit position-relative" contenteditable="false">
                             <%- usuario.nome %>
                         </h4>

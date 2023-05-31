@@ -4,6 +4,7 @@ import { AzureKeyCredential } from '@azure/core-auth'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import logger from '../logger'
+import jwtServiceInstance from './jwtService'
 
 class EmailService {
     #emailClient: EmailClient
@@ -23,26 +24,48 @@ class EmailService {
     #obterTemplateEmailHtmlPreenchidoComVariaveis(
         nomeClube: string,
         nomeRemetente: string,
-        nomeDestinatario: string): string {
+        idClube: number,
+        idUsuarioRemetente: number,
+        emailUsuarioRemetente: string,
+        host: string,
+        emailDestinatario: string
+    ): string {
         const htmlBase = readFileSync(
             resolve('views', 'templates', 'convite-email.min.html'),
             { encoding: 'utf8' }
         )
-        console.log(htmlBase.substring(0, 20))
-        const htmlDefinitivo = htmlBase.replace('${nome_clube}', nomeClube).replace('${nome_remetente}', nomeRemetente).replace('${nome_destinatario}', nomeDestinatario)
+
+        const jwtToken = jwtServiceInstance.sign({ idClube, idUsuarioRemetente, emailUsuarioRemetente, emailConvidado: emailDestinatario }, )
+        const endpoint = host + '/usuario/cadastro/convite'
+
+        const htmlDefinitivo = htmlBase
+            .replace('${nome_clube}', nomeClube)
+            .replace('${nome_remetente}', nomeRemetente)
+            .replace('${nome_destinatario}', 'Leitor')
+            .replace('${link}', `${endpoint}?token=${jwtToken}`)
         return htmlDefinitivo
     }
 
     #contruirConteudoEmail(
         nomeClube: string,
         nomeRemetente: string,
-        nomeDestinatario: string,
-        emailDestinatario: string): EmailMessage {
+        emailDestinatario: string,
+        idClube: number,
+        idUsuarioRemetente: number,
+        emailUsuarioRemetente: string,
+        host: string): EmailMessage {
         const message: EmailMessage = {
             senderAddress: this.#dominioEmailApp,
             content: {
                 subject: 'Convite para Participar do Clube do Livro',
-                html: this.#obterTemplateEmailHtmlPreenchidoComVariaveis(nomeClube, nomeRemetente, nomeDestinatario)
+                html: this.#obterTemplateEmailHtmlPreenchidoComVariaveis(
+                    nomeClube,
+                    nomeRemetente,
+                    idClube,
+                    idUsuarioRemetente,
+                    emailUsuarioRemetente,
+                    host,
+                    emailDestinatario)
             },
             recipients: {
                 to: [{
@@ -57,10 +80,20 @@ class EmailService {
     async enviarEmailDeConvite(
         nomeClube: string,
         nomeRemetente: string,
-        nomeDestinatario: string,
-        emailDestinatario: string) {
+        emailDestinatario: string,
+        idClube: number,
+        idUsuarioRemetente: number,
+        emailUsuarioRemetente: string,
+        host: string) {
         try {
-            const mensagemEmail = this.#contruirConteudoEmail(nomeClube, nomeRemetente, nomeDestinatario, emailDestinatario)
+            const mensagemEmail = this.#contruirConteudoEmail(
+                nomeClube,
+                nomeRemetente,
+                emailDestinatario,
+                idClube,
+                idUsuarioRemetente,
+                emailUsuarioRemetente,
+                host)
             const poller = await this.#emailClient.beginSend(mensagemEmail)
             if (!poller.getOperationState().isStarted) {
                 throw new Error('Email send polling in progress')

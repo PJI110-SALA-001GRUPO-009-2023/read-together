@@ -8,7 +8,7 @@
     align-items: center;
 }
 
-.foto-perfil {
+.overview-figure {
     border-radius: 200px;
     width: 200px;
 }
@@ -40,17 +40,17 @@ figure#card-img-clipped {
     width: 100%;
 }
 
-figure#foto-perfil {
+figure#overview-figure {
     width: 80%;
 }
 
-figure#foto-perfil {
+figure#overview-figure {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-figure#foto-perfil>img {
+figure#overview-figure>img {
     clip-path: circle(50% at center);
 }
 

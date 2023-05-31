@@ -1,61 +1,98 @@
 <div class="container" id="container-form">
-    <form class="row" method="post">
-        <h3>Cadastre-se:</h3>
-        <div class="col">
-            <div class="md-4">
-                <label for="nome" class="label-form-cad">Nome:</label>
-                <input name="nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-            </div>
-            <div class="md-4">
-                <label for="email" class="label-form-cad">E-mail</label>
-                <input name="email" type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
-            </div>
-            <div class="md-4">
-                <label for="local" class="label-form-cad">Local:</label>
-                <input type="select" class="form-control" id="local" placeholder="Exemplo: São Paulo - SP">
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="md-4">
-                <label class="picture-input" for="imagem" tabIndex="0">
-                    <span class="picture-image"></span>
-                </label>
-            </div>
-            <div class="md-4">
-                <input type="file" id="picture-input">
-                <div class="md-4">
-                    <label for="bio" class="label-form-cad">Descrição:</label>
-                    <textarea name="bio" class="form-control" placeholder="Fale um pouco sobre você..." id="bio"
-                        style="height: 100px" required></textarea>
+    <div class="row w-100">
+        <form class="m-auto col-6 p-3" action="/usuario/cadastro" method="post">
+            <h3>Cadastre-se:</h3>
+            <fieldset class="row my-2 d-flex justify-content-between">
+                <div class="col-12 my-2">
+                    <label for="nome" class="label-form-cad my-1">Nome:</label>
+                    <input name="nome" type="text" class="form-control border border-primary" id="nome"
+                        placeholder="Nome" required>
                 </div>
-            </div>
-        </div>
-        <hr class="dashed">
-        <div class="row">
-            <div class="col">
-                <div class="md-4">
-                    <label for="senha" class="label-form-cad">Senha:</label>
-                    <input name="senha" type="password" class="form-control" id="user-password" placeholder="Cadastre sua senha:"
-                        required>
+                <div class="col-12">
+                    <label for="email" class="label-form-cad my-1">E-mail</label>
+                    <input name="email" type="email" class="form-control border border-primary" id="email"
+                        placeholder="nome@exemplo.com" required>
                 </div>
-            </div>
-            <div class="col">
-                <div class="md-4">
-                    <label for="senha" class="label-form-cad">Confirme a senha:</label>
-                    <input type="password" class="form-control" id="user-password-conf"
-                        placeholder="Repita a senha cadastrada:" required>
+                <div id="fields"></div>
+            </fieldset>
+            <fieldset class="row">
+                <div class="col-6">
+                    <div class="md-4">
+                        <label for="senha" class="label-form-cad my-1">Senha:</label>
+                        <input name="senha" type="password" class="form-control border border-primary"
+                            id="user-password" placeholder="Cadastre sua senha:" required>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <hr class="dashed">
-        <div class="row">
-            <div class="col">
-                <div class="md-4">
-                    <button class="btn" id="btn-lilas">Cadastrar</button>
+                <div class="col-6">
+                    <div class="md-4">
+                        <label for="senha" class="label-form-cad my-1">Confirme a senha:</label>
+                        <input type="password" class="form-control border border-primary" id="user-password-conf"
+                            placeholder="Repita a senha cadastrada:" required>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="row my-4">
+                <div class="col">
+                    <button type="button" class="btn me-2" id="btn-lilas">Cadastrar</button>
                     <a href="/" class="btn btn-primary" id="btn-branco">Cancelar</a>
                 </div>
-            </div>
-        </div>
-    </form>
+            </fieldset>
+        </form>
+    </div>
 </div>
+<script id="session-storage">
+    sessionStorage.setItem('idClube', '<%-idClube%>')
+    sessionStorage.setItem('emailConvidado', '<% -emailConvidado || "''" %>')
+</script>
+<script>
+    function montarJSONComDadosDoForm() {
+        let jsonBody = {}
+        document.querySelectorAll('input').forEach(el => {
+            if (el.name) {
+                jsonBody[el.name] = el.value
+            }
+        })
+        return jsonBody
+    }
+
+    document.querySelector('button').addEventListener('click', (e) => {
+        const idClube = Number(sessionStorage.getItem('idClube'))
+        const emailConvidado = sessionStorage.getItem('emailConvidado')
+        let jBody
+        if (idClube && emailConvidado) {
+            document.querySelector('#fields').innerHTML = `<input name="idClube" type="hidden" value='${idClube}'><input name="emailConvidado" type="hidden" value='${emailConvidado}'>`
+            jBody = montarJSONComDadosDoForm()
+
+            if (jBody.email &&
+            jBody.email !== jBody.emailConvidado) {
+                alert('Usuário deve se cadastrar com o mesmo e-mail que recebeu o convite.')
+                return
+            }
+
+            console.log('token', jBody)
+
+        } else {
+            jBody = montarJSONComDadosDoForm()
+            console.log('normal', jBody)
+        }
+
+        const jstr = JSON.stringify(jBody)
+        console.log(jstr)
+
+        fetch('cadastro', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: jstr
+        })
+            .then(response => {
+                if (response.redirected)
+                    location.assign(response.url)
+                else
+                    return response.text()
+            })
+            .then(json => console.log(json))
+            .catch(err => console.error(err))
+    })
+</script>

@@ -2,7 +2,8 @@ import { Prisma, PrismaClient, Usuario } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import logger from '../logger'
 import { gerarSenha, limpaCamposVazios } from '../utils'
-import { UsuarioDadosPK } from '../types/services'
+import { ClubeDadosPK, UsuarioDadosPK } from '../types/services'
+import { RoleEnum } from '../types/enums'
 
 /**
  * Serviços relacionados a usuários
@@ -19,19 +20,66 @@ export class UsuarioService {
     /**
      * Armazena novo usuário no banco
      */
-    public async criarUsuario(this: UsuarioService, usuario: Prisma.UsuarioCreateInput): Promise<Usuario> {
+    public async criarUsuario(
+        this: UsuarioService,
+        usuario: Prisma.UsuarioCreateInput,
+        idClube?: string
+    ): Promise<Usuario> {
         const senha = await gerarSenha(usuario.senha)
         const dados = { ...usuario, senha }
-        return this.prisma.usuario.create({ data: dados })
-            .then(usuario => {
-                UsuarioService.logger.info('Usuário criado ID: %d', usuario.idUsuario)
+
+        try {
+            const usuario = await this.prisma.usuario.create({ data: dados })
+            UsuarioService.logger.info('Usuário criado ID: %d', usuario.idUsuario)
+            UsuarioService.logger.debug('Dados :', usuario)
+            if (idClube) {
+                await this.prisma.membroDoClube.create({
+                    data: {
+                        idClube: Number(idClube),
+                        idUsuario: usuario.idUsuario,
+                        codRole: RoleEnum.MEMBRO
+                    }
+                })
+                UsuarioService.logger.info('Usuário adicionado como mebro do clube com ID: %d', idClube)
+            }
+
+            return usuario
+        }
+        catch (err) {
+            UsuarioService.logger.error(err)
+            throw err
+        }
+    }
+
+    public async atualizarSenha(
+        this: UsuarioService,
+        usuario: Pick<Usuario, 'email' | 'senha'>
+    ): Promise<boolean> {
+        const senha = await gerarSenha(usuario.senha)
+        const dados = { email: usuario.email, senha }
+
+        try {
+            const usuario = await this.prisma.usuario.update({
+                data: dados,
+                where: {
+                    email: dados.email
+                }
+            })
+
+            if (!usuario) {
+                return false
+            } else {
+
+                UsuarioService.logger.info('Usuário com ID %d teve sua senha atualizada.', usuario.idUsuario)
                 UsuarioService.logger.debug('Dados :', usuario)
-                return usuario
-            })
-            .catch(err => {
-                UsuarioService.logger.error(err)
-                throw err
-            })
+
+                return true
+            }
+        }
+        catch (err) {
+            UsuarioService.logger.error(err)
+            return false
+        }
     }
 
     public async buscarUsuarioPorEmail(this: UsuarioService, email: string): Promise<Usuario | null> {
@@ -45,7 +93,7 @@ export class UsuarioService {
     }
 
     public async buscarUsuarioPorId(this: UsuarioService, usuario: UsuarioDadosPK)
-        : Promise<Omit<Usuario, 'senha' | 'email'> | null> {
+        : Promise<Omit<Usuario, 'senha'> | null> {
         return this.prisma.usuario.findUnique({
             select: {
                 idUsuario: true,
@@ -54,6 +102,7 @@ export class UsuarioService {
                 bio: true,
                 imagem: true,
                 imagemUrl: true,
+                email: true
             },
             where: {
                 idUsuario: usuario.idUsuario
@@ -63,6 +112,34 @@ export class UsuarioService {
                 UsuarioService.logger.error(err)
                 throw err
             })
+    }
+
+    public async verificarSeUsuarioEAdminDoClube(
+        this: UsuarioService,
+        usuario: UsuarioDadosPK,
+        clube: ClubeDadosPK) {
+        const usuarioTemRoleAdmin = await this.prisma.membroDoClube.findUnique({
+            where: {
+                idClube_idUsuario_codRole: {
+                    idClube: clube.idClube,
+                    idUsuario: usuario.idUsuario,
+                    codRole: RoleEnum.ADMIN
+                }
+            }
+        })
+
+        if (!usuarioTemRoleAdmin) {
+            logger.error('Usuario não é admin do clube!')
+            return false
+        }
+
+        const emailPertenceAoUsuarioAdmin = usuario.email && await this.buscarUsuarioPorEmail(usuario.email)
+        if (!emailPertenceAoUsuarioAdmin) {
+            logger.error('Este e-mail não pertence ao usuário admin')
+            return false
+        }
+
+        return true
     }
 
     public async editarUsuario(this: UsuarioService, usuario: UsuarioDadosPK): Promise<Usuario> {

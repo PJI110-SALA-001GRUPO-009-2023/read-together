@@ -9,11 +9,17 @@
                 <input name="senha" type="password" class="form-control border border-primary w-100" id="password" placeholder=" Digite sua Senha:" required>
                 <label for="password">Digite sua Senha:</label>
             </div>
+            <% if (failureMessage) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Senha ou email incorretos.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+            <% } %>
         </fieldset>
         <fieldset class="row-cols-2 text-center">
             <button type="submit" class="btn col-5" id="btn-lilas">Login</button>
             <a href="/usuario/cadastro" class="btn col-5 offset-1" id="btn-branco">Cadastre-se</a>
-            <a href="#" class="d-block m-auto" id="bnt-reset">Esqueceu a senha?</a>
+            <a href="/recuperar-senha" class="mt-1 d-block m-auto" id="bnt-reset">Esqueceu a senha?</a>
         </fieldset>
     </form>
 </div>
