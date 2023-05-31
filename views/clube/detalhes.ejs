@@ -32,23 +32,10 @@
         </div>
         <div class="col row justify-content-evenly h-50" id="clube-destaques">
         <% if (clubeData.admin) { %>
-            <section class="col-lg-4 d-flex flex-column">
-                <a href="<%- clubeData.idClube -%>/reuniao/1" class="d-inline rounded mb-2 btn btn-lilas btn-secondary">
-                    Criar Reunião
-                </a>
-                <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#enqueteModal">
-                    Enquetes
-                </button>
-                <button class="line rounded mb-2 btn btn-lilas btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#membrosModal">
-                    Membros
-                </button>
-            </section>
-            <%- include('./partials/_enqueteModal.ejs') %>
-            <%- include('./partials/_adicionarMembroModal.ejs', {idClube: clubeData.idClube}) %>
+            <%- include('./partials/_comControlesAdmin.ejs', {idClube: clubeData.idClube, usuarioAdmin: clubeData.admin}) %>
+        <% } else { %>
+            <%- include('./partials/_semControlesAdmin.ejs', {idClube: clubeData.idClube, usuarioAdmin: clubeData.admin}) %>
         <% } %>
-            <%- include('./partials/_listaLeituras.ejs', {usuarioAdmin: clubeData.admin}) %>
         </div>
     </div>
 </div>

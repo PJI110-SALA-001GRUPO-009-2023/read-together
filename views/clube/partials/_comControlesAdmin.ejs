@@ -1,0 +1,16 @@
+<section class="col-lg-4 d-flex flex-column">
+    <a href="<%- clubeData.idClube -%>/reuniao/1" class="d-inline rounded mb-2 btn btn-lilas btn-secondary">
+        Participar da Reunião
+    </a>
+    <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary" type="button" data-bs-toggle="modal"
+        data-bs-target="#enqueteModal">
+        Enquetes
+    </button>
+    <button class="line rounded mb-2 btn btn-lilas btn-secondary" type="button" data-bs-toggle="modal"
+        data-bs-target="#membrosModal">
+        Membros
+    </button>
+</section>
+<%- include('./_enqueteModal.ejs') %>
+<%- include('./_adicionarMembroModal.ejs', {idClube: clubeData.idClube}) %>
+<%- include('./_listaLeituras.ejs', {usuarioAdmin: clubeData.admin}) %>

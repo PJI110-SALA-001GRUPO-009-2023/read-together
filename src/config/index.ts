@@ -1,5 +1,6 @@
 /* Deve vir no incio para permimtir debugs */
 import * as dotenv from 'dotenv'
+dotenv.config()
 
 import * as utils from '../utils'
 
