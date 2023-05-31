@@ -8,7 +8,7 @@ import { DadosClubeERoleValidacaoCodes, StatusCodes } from '../types/enums'
 import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
 import { UsuarioAutenticado } from '../types/services'
-import { preencherOpcoesDeRender } from '../utils'
+import { asyncSha1HexHash, preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 import { createBlobInContainer } from '../services/blogStorageService'
 
@@ -50,20 +50,12 @@ router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe
         return
     }
     try {
-        const dados = await validacaoServiceInstance.validarClubeDadosCriacao(req.body)
+        const dados = validacaoServiceInstance.validarClubeDadosCriacao(req.body)
         const idUsuario = Number(usuario?.idUsuario)
-        const clube = await clubeServiceInstance.criarClube(dados, { idUsuario })
+        const clube = await clubeServiceInstance.criarClube(await dados, { idUsuario })
         res.redirect(`${req.baseUrl}/${clube.idClube}`)
     } catch (error) {
-        const redirect = `${req.baseUrl}${req.path}`
-        if (error instanceof Error && error.name === 'ValidationError') {
-            res.redirect(400, redirect)
-            return
-        }
-        res.redirect(500, redirect)
-        if (esPrismaErro(error)) {
-            return
-        }
+        res.locals.redirect = `${req.baseUrl}${req.path}`
         next(error)
     }
 })
@@ -191,6 +183,39 @@ router.post('/edicao-conteudo', async (req, res, next) => {
         res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ info: 'falha ao atualizar dados' })
+        next(error)
+    }
+})
+
+
+router.get('/:idClube(\\d+)/reuniao/:idReuniao(\\d+)', async (req, res, next) => {
+    try {
+        const { idUsuario } = req.user as UsuarioAutenticado
+        const { idClube } = req.params
+
+        const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
+            Number(idClube), Number(idUsuario)
+        )
+
+        if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
+            if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
+                res.redirect('/404')
+            } else {
+                res.redirect(StatusCodes.UNAUTHORIZED, 'back')
+            }
+            return
+        }
+
+        const { nome, subtitulo } = DTOValidacaoClubeERegistroEmClube[0]
+        const hash = await asyncSha1HexHash(nome.concat(idClube))
+
+        const options = preencherOpcoesDeRender({
+            titulo: 'Reuniao - Leitura do Mês',
+            diretorioBase: _dirBase,
+            cssCustomizados: buscarCSS('reuniao', _dirBase)
+        })
+        res.render('clube/reuniao', { ...options, clubeData: { nome, subtitulo, idClube, hash } })
+    } catch (error) {
         next(error)
     }
 })

@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt'
 import { ViewOptionsInterface } from '../types/routes'
 import { join } from 'path'
-import { randomUUID } from 'crypto'
+import crypto from 'crypto'
+import { promisify } from 'util'
 
 export const UM_DIA_EM_MS = 86400000
 
@@ -86,7 +87,18 @@ export function limpaCamposVazios(params: object): object {
     return Object.fromEntries(entradas)
 }
 
-export function UUIDValido(uuid: string): boolean {
-    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-    return uuidPattern.test(uuid)
+function sha1HexHash(key:string) {
+    return crypto.createHash('sha1').update(key).digest('hex')
+}
+
+export const asyncSha1HexHash = (key: string) => {
+    return new Promise<string>((resolve, reject) => {
+        try {
+            const h = sha1HexHash(key)
+            console.log(h)
+            resolve(h)
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
