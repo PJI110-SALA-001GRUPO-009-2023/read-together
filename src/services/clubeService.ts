@@ -118,12 +118,13 @@ export class ClubeService {
     public async buscaDeClubesRelacionadosAoUsuario(
         this: ClubeService,
         usuario: UsuarioDadosPK,
-    ): Promise<Pick<Clube, 'idClube' | 'nome' | 'descricao'>[]> {
+    ): Promise<Pick<Clube, 'idClube' | 'nome' | 'descricao' | 'imagemUrl'>[]> {
         return this.prisma.clube.findMany({
             select: {
                 idClube: true,
                 nome: true,
-                descricao: true
+                descricao: true,
+                imagemUrl: true
             },
             where: {
                 membroDoClube: {

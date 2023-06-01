@@ -35,27 +35,29 @@ const _viewFolder = 'usuario'
 // })
 
 router.get('/cadastro', async (req, res) => {
-    const { tokenConvidado } = req.query
+    const tokenRegistroConvidado = req.query['registro-convidado']
     let idClube = 0
     let emailConvidado = ''
 
-    if (tokenConvidado?.toString()) {
+    if (tokenRegistroConvidado?.toString()) {
 
-        const resultadoValidacao = jwtServiceInstance.verify(tokenConvidado?.toString()) as JwtGuestRegistrationPayload
+        const resultadoValidacao = jwtServiceInstance.verify(tokenRegistroConvidado?.toString()) as JwtGuestRegistrationPayload
         if (!resultadoValidacao.valid) {
             res.status(401).redirect('/convite-expirado')
             logger.error((resultadoValidacao as JwtPayload).error)
             return
         }
 
+
         const payload = resultadoValidacao.payload
-        idClube = payload.idClube
+        console.log(payload)
+        idClube = payload.clubeConvidante
         emailConvidado = payload.emailConvidado
 
         if (!idClube || !emailConvidado) {
             res.status(400).json({ mensagem: 'Payload com dados incompletos' })
             return
-        } else if (!(await clubeServiceInstance.buscaPorId(idClube))) {
+        } else if (!(await clubeServiceInstance.buscaPorId(Number(idClube)))) {
             res.status(404).redirect('/404')
             return
         }
