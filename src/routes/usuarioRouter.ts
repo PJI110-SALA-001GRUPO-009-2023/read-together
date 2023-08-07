@@ -129,7 +129,7 @@ router.post('/cadastro', async (req, res, next) => {
         } else {
             usuario = await usuarioServiceInstance.criarUsuario(dados)
         }
-        res.redirect(`${req.baseUrl}/editar/${usuario.idUsuario}`)
+        res.redirect(`/login`)
     } catch (error) {
         const redirect = `${req.baseUrl}${req.path}`
         if (error instanceof Error && error.name === 'ValidationError') {
