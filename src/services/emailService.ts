@@ -18,7 +18,7 @@ class EmailService {
         this.#azureEmailCommsKey = new AzureKeyCredential(config.CHAVE_AZURE_EMAIL_COMMUNICATION_SERVICE)
         this.#emailClient = new EmailClient(this.#azureEmailCommsEndpoint, this.#azureEmailCommsKey)
         this.#POLLER_TEMPO_ESPERA = 10
-        this.#dominioEmailApp = 'DoNotReply@c7bb72eb-d9ca-4e21-92f2-823432e90a58.azurecomm.net'
+        this.#dominioEmailApp = config.DOMINIO_AZURE_EMAIL_COMMUNICATION_SERVICE
     }
 
     #obterTemplateEmailHtmlPreenchidoComVariaveis(
