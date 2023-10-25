@@ -50,7 +50,8 @@ export class ValidacaoService {
      * @param dados para validar
      * @returns dados validados
      */
-    public async validarUsuarioDadosCriacao(dados: RequestDadosOpcionaisDe<Usuario>): Promise<Prisma.UsuarioCreateInput> {
+    public async validarUsuarioDadosCriacao(dados: Usuario): Promise<Prisma.UsuarioCreateInput> {
+        console.log(dados)
         return ValidacaoService.criarUsuarioSchema.validateAsync(dados)
             .then(dados => {
                 ValidacaoService.logger.debug('Dados validados: ', dados)

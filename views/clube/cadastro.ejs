@@ -1,10 +1,10 @@
 <div id="cadastro-container" class="container-fluid">
 
     <h3 class="text-center my-4">Crie seu Clube de Leitura</h3>
-    <form class="d-flex flex-column" action="/clube/cadastro" method="post" enctype="multipart/form-data">
+    <form class="d-flex flex-column px-4" action="/clube/cadastro" method="post">
 
         <fieldset class="row my-2 d-flex justify-content-between">
-            <div class="col-lg-7 d-flex flex-column">
+            <div class="col d-flex flex-column">
                 <label class="col">
                     Nome do Clube:
                     <input class="form-control border border-primary my-2" type="text" name="nome" id="nome-clube"
@@ -17,13 +17,6 @@
                 <label class="col">
                     Categoria:
                     <input class="form-control border border-primary my-2" type="text" name="categoria" id="categoria">
-                </label>
-            </div>
-            <div class="col-lg-4 drop-container">
-                <span class="drop-title">Arraste um arquivo para cá <br> ou</span>
-                <label>
-                    <input class="form-control border border-primary" name="imagem" id="upload-imagem" type="file"
-                        accept="image/*" />
                 </label>
             </div>
         </fieldset>
@@ -75,7 +68,6 @@
         document.querySelector('input#nome-clube').value = 'nome teste'
         document.querySelector('input#tema').value = 'subtema teste'
         document.querySelector('input#categoria').value = 'categoria teste'
-        document.querySelector('input#upload-imagem').value = ''
         document.querySelector('input#site').value = 'https://site.teste.com'
         document.querySelector('input#whatsApp').value = 'https://wa.teste.com'
         document.querySelector('input#telegram').value = 'https://tl.teste.com'

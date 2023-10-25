@@ -232,6 +232,7 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 INSERT INTO `mydb`.`ROLE` VALUES (1, 'Admin', 'Usuario moderador'), (2, 'Membro', 'Usuario participante ou leitor');
+INSERT INTO `mydb`.`STATUS_ESPERA` VALUES (1, 'Aguardando', 'Convite enviado e pendente de aceite - usuário ainda não se registrou através do link enviado'), (2,'Recusado', 'Convite atingiu tempo de expiração'), (3,'Aceito', 'Convite aceito - usuário se registrou através do link enviado')
 
 DELIMITER $$
 CREATE DEFINER=`root`@`%` PROCEDURE `mydb`.`SP_SELECT_DADOS_CLUBE_E_ROLE_SE_USUARIO_FOR_REGISTRADO`(

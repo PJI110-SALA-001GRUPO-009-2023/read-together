@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import { ViewOptionsInterface } from '../types/routes'
 import { join } from 'path'
+import crypto from 'crypto'
+import { promisify } from 'util'
 
 export const UM_DIA_EM_MS = 86400000
 
@@ -83,4 +85,20 @@ function converteStringNaoVaziaEmData(s: string): Date | null {
 export function limpaCamposVazios(params: object): object {
     const entradas = Object.entries(params).filter(([chave, valor]) => valor !== undefined || valor !== null)
     return Object.fromEntries(entradas)
+}
+
+function sha1HexHash(key:string) {
+    return crypto.createHash('sha1').update(key).digest('hex')
+}
+
+export const asyncSha1HexHash = (key: string) => {
+    return new Promise<string>((resolve, reject) => {
+        try {
+            const h = sha1HexHash(key)
+            console.log(h)
+            resolve(h)
+        } catch (error) {
+            reject(error)
+        }
+    })
 }

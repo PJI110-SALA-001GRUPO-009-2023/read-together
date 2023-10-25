@@ -8,7 +8,7 @@ import { DadosClubeERoleValidacaoCodes, StatusCodes } from '../types/enums'
 import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosDe, RequestDadosOpcionaisDe } from '../types/routes'
 import { UsuarioAutenticado } from '../types/services'
-import { preencherOpcoesDeRender } from '../utils'
+import { asyncSha1HexHash, preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 import { createBlobInContainer } from '../services/blogStorageService'
 
@@ -50,20 +50,12 @@ router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe
         return
     }
     try {
-        const dados = await validacaoServiceInstance.validarClubeDadosCriacao(req.body)
+        const dados = validacaoServiceInstance.validarClubeDadosCriacao(req.body)
         const idUsuario = Number(usuario?.idUsuario)
-        const clube = await clubeServiceInstance.criarClube(dados, { idUsuario })
+        const clube = await clubeServiceInstance.criarClube(await dados, { idUsuario })
         res.redirect(`${req.baseUrl}/${clube.idClube}`)
     } catch (error) {
-        const redirect = `${req.baseUrl}${req.path}`
-        if (error instanceof Error && error.name === 'ValidationError') {
-            res.redirect(400, redirect)
-            return
-        }
-        res.redirect(500, redirect)
-        if (esPrismaErro(error)) {
-            return
-        }
+        res.locals.redirect = `${req.baseUrl}${req.path}`
         next(error)
     }
 })
@@ -84,18 +76,7 @@ router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'id
         return
     }
 
-    const membros = [
-        'Charlie Thompson',
-        'Samir Grant',
-        'Dana Fleming',
-        'Elisa O\'Brien',
-        'Ana Castillo',
-        'Ahmed Wade',
-        'Zakir Velazquez',
-        'Abdul Mahoney',
-        'Clifford Miles',
-        'Carlos Moody'
-    ]
+    const membros = await clubeServiceInstance.buscarUsuariosMembrosDoClube(Number(idUsuario), Number(idClube))
 
     const options = preencherOpcoesDeRender({
         titulo: 'Detalhes sobre o Clube',
@@ -128,15 +109,36 @@ router.get('/leituras', (req, res) => {
 
 router.post('/email', async (req, res) => {
     const { idClube, emailDestinatario } = req.body
-    console.log(idClube, emailDestinatario)
-    const { idUsuario, nome } = req.user as UsuarioAutenticado
-    const usuarioFazParteDoClube = await clubeServiceInstance.verificarSeEstaRegistradoNoClube(Number(idClube), Number(idUsuario))
-    if (!usuarioFazParteDoClube) {
+    const { idUsuario, nome: nomeAdmin, email: emailAdmin } = req.user as UsuarioAutenticado
+
+    const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
+        Number(idClube), Number(idUsuario)
+    )
+
+    if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
+        if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
+            res.redirect('/404')
+        } else {
+            res.redirect(StatusCodes.UNAUTHORIZED, 'back')
+        }
+        return
+    }
+
+    const { admin, nome: nomeClube } = DTOValidacaoClubeERegistroEmClube[0]
+
+    if (!admin) {
         console.log('algo deu errado')
         res.json({ status: 'Nao Autorizado' })
     } else {
         try {
-            emailServiceInstance.enviarEmailDeConvite('teste', nome ?? 'nomeFallback', 'Fulano', emailDestinatario ?? 'jalucas.jall@gmail.com')
+            emailServiceInstance.enviarEmailDeConvite(
+                nomeClube,
+                nomeAdmin ?? 'nomeFallback',
+                emailDestinatario ?? 'jalucas.jall@gmail.com',
+                idClube,
+                Number(idUsuario),
+                emailAdmin || '',
+                `${req.protocol}://${req.headers.host}` || '')
             res.json({ status: 'Em processo de envio' })
         } catch (e) {
             console.error(e)
@@ -160,10 +162,11 @@ router.post('/edicao-conteudo', async (req, res, next) => {
         let blobUrl = ''
         if (base64) {
             const regex = /^data:(image\/.+);base64,(.+)$/
-            const fileMatch = base64.match(regex)!
-            const [_, fileType, fileData] = fileMatch
-            console.log(fileMatch)
-            blobUrl = await createBlobInContainer(fileType, fileData, `_${_dirBase}${idClube}`)
+            const fileMatch = base64.match(regex)
+            if (fileMatch) {
+                const [, fileType, fileData] = fileMatch
+                blobUrl = await createBlobInContainer(fileType, fileData, `_${_dirBase}${idClube}`)
+            }
         }
 
         const clubeDadosAtualizados = {
@@ -177,9 +180,42 @@ router.post('/edicao-conteudo', async (req, res, next) => {
         clubeServiceInstance.atualizarInformacaoDoClube(clubeDadosAtualizados, { idUsuario: idUsuario || 0 })
 
 
-        res.status(StatusCodes.OK).json({info: 'atualização em andamento'})
+        res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({info: 'falha ao atualizar dados'})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ info: 'falha ao atualizar dados' })
+        next(error)
+    }
+})
+
+
+router.get('/:idClube(\\d+)/reuniao/:idReuniao(\\d+)', async (req, res, next) => {
+    try {
+        const { idUsuario } = req.user as UsuarioAutenticado
+        const { idClube } = req.params
+
+        const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
+            Number(idClube), Number(idUsuario)
+        )
+
+        if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
+            if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
+                res.redirect('/404')
+            } else {
+                res.redirect(StatusCodes.UNAUTHORIZED, 'back')
+            }
+            return
+        }
+
+        const { nome, subtitulo } = DTOValidacaoClubeERegistroEmClube[0]
+        const hash = await asyncSha1HexHash(nome.concat(idClube))
+
+        const options = preencherOpcoesDeRender({
+            titulo: 'Reuniao - Leitura do Mês',
+            diretorioBase: _dirBase,
+            cssCustomizados: buscarCSS('reuniao', _dirBase)
+        })
+        res.render('clube/reuniao', { ...options, clubeData: { nome, subtitulo, idClube, hash } })
+    } catch (error) {
         next(error)
     }
 })

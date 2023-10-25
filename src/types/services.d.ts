@@ -34,3 +34,24 @@ export interface UsuarioAutenticado extends Express.User {
 }
 
 export type AutenticacaoService = typeof autenticacaoServiceInstance
+
+export type JwtValidationResult =
+    | { valid: true, payload: JwtPayload | string }
+    | { valid: false, error: string | null }
+
+
+export type JwtEmailInvitePayload = JwtValidationResult & {
+    payload: {
+        idClube: number
+        idUsuario: number
+        email: string,
+        emailConvidado: string
+    }
+}
+
+export type JwtGuestRegistrationPayload = JwtValidationResult & {
+    payload: {
+        idClube: number,
+        emailConvidado: string
+    }
+}

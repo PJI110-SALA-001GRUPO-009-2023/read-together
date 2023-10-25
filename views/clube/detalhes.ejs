@@ -1,58 +1,45 @@
 <div class="container h-100 pt-4" style="margin-top: 20px;">
     <div class="row">
         <div class="col-lg-4">
-            <div class="card position-relative overview-pagina" style="margin-right: 20px; margin-left: 10px">
+            <div id="overview-container" class="card position-relative overview-pagina" style="margin-right: 20px; margin-left: 10px">
                 <% if (clubeData.admin) { %>
                     <%- include('../shared/_modoEdicao') %>
-                    <% } %>
-                        <figure class="m-auto mb-2 foto-perfil-clube position-relative">
-                            <img class="img-fluid rounded-circle can-edit" src="<%-clubeData.imagemUrl || '/midia/imagens/kaffe.jpg'%>" alt="">
-                            <div class="top-0 position-absolute w-100 h-100">
-                                <label for="imageUpload"><i class="bi bi-pencil-square representante-edicao"></i></label>
-                                <input class="d-none" type="file" accept=".png, .jpg, .jpeg" id="imageUpload" name="imageUpload">
-                                <input type="hidden" name="idClube" value="<%-clubeData.idClube%>">
-                            </div>
-                        </figure>
-                        <section class="card-body w-100">
-                            <h4 data-name="nome" class="card-title can-edit">
-                                <%- clubeData.nome %>
-                            </h4>
-                            <h5 data-name="subtitulo" class="card-subtitle mb-2 text-muted can-edit">
-                                <%- clubeData.subtitulo %>
-                            </h5>
-                            <p data-name="descricao" class="card-text text-truncate descricao-truncate can-edit mb-1" aria-expanded="false">
-                                <%- clubeData.descricao %>
-                            </p>
-                            <button class="d-block btn-link btn-ler-mais">« Ler mais »</button>
-                            <section class="w-100 mt-2">
-                                <%- include('./partials/_listaLinks') %>
-                            </section>
+                <% } %>
+                    <figure id="overview-figure" class="m-auto mb-2 overview-figure-clube position-relative">
+                        <img data-name="imagemUrl" class="img-fluid rounded-circle can-edit" src="<%-clubeData.imagemUrl || '/midia/imagens/kaffe.jpg'%>" alt="">
+                        <div class="top-0 position-absolute w-100 h-100">
+                            <label for="imageUpload"><i class="bi bi-pencil-square representante-edicao"></i></label>
+                            <input class="d-none" type="file" accept=".png, .jpg, .jpeg" id="imageUpload" name="imageUpload">
+                            <input type="hidden" name="idClube" value="<%-clubeData.idClube%>">
+                        </div>
+                    </figure>
+                    <section id="overview-section" class="card-body w-100">
+                        <h4 data-name="nome" class="card-title can-edit fs-5">
+                            <%- clubeData.nome %>
+                        </h4>
+                        <h5 data-name="subtitulo" class="card-subtitle mb-2 text-muted can-edit fs-6 small">
+                            <%- clubeData.subtitulo %>
+                        </h5>
+                        <p data-name="descricao" class="card-text text-truncate descricao-truncate can-edit mb-1" aria-expanded="false">
+                            <%- clubeData.descricao %>
+                        </p>
+                        <button id="clube-ler-mais-btn" class="d-block btn-link btn-ler-mais">« Ler mais »</button>
+                        <section class="w-100 mt-2">
+                            <%- include('./partials/_listaLinks') %>
                         </section>
+                    </section>
             </div>
         </div>
         <div class="col row justify-content-evenly h-50" id="clube-destaques">
         <% if (clubeData.admin) { %>
-            <section class="col-lg-4 d-flex flex-column">
-                <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary">
-                    Criar Reunião
-                </button>
-                <button class="d-inline rounded mb-2 btn btn-lilas btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#enqueteModal">
-                    Enquetes
-                </button>
-                <button class="line rounded mb-2 btn btn-lilas btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#membrosModal">
-                    Membros
-                </button>
-            </section>
-            <%- include('./partials/_enqueteModal.ejs') %>
-            <%- include('./partials/_adicionarMembroModal.ejs', {idClube: clubeData.idClube}) %>
+            <%- include('./partials/_comControlesAdmin.ejs', {idClube: clubeData.idClube, usuarioAdmin: clubeData.admin}) %>
+        <% } else { %>
+            <%- include('./partials/_semControlesAdmin.ejs', {idClube: clubeData.idClube, usuarioAdmin: clubeData.admin}) %>
         <% } %>
-            <%- include('./partials/_listaLeituras.ejs', {usuarioAdmin: clubeData.admin}) %>
         </div>
     </div>
 </div>
-<script src="/scripts/lerMaisUtility.js"></script>
+<script src="/scripts/lerMaisUtility.js" type="module"></script>
 <% if (clubeData.admin) { %>
-    <script src="/scripts/editorInformacoesCard.js"></script>
+    <script src="/scripts/editorInformacoesCard.js" type="module"></script>
 <% } %>

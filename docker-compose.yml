@@ -12,9 +12,9 @@ services:
       - readtogheter
 
   app:
-    image: read-together-app:latest
+    image: read-together-app:dev
     ports:
-      - 8080:8080
+      - 8080:80
     depends_on:
       - db
     networks:

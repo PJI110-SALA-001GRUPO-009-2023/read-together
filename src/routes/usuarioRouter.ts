@@ -1,38 +1,54 @@
 import { Usuario } from '@prisma/client'
-import { Request, Router } from 'express'
+import express, { Request, Router } from 'express'
 import { esPrismaErro } from '../prisma/prisma'
 import usuarioServiceInstance from '../services/usuarioService'
 import validacaoServiceInstance from '../services/validacaoService'
 import { RequestDadosOpcionaisDe, UsuarioRequestParams } from '../types/routes'
 import { preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
-import { randomBytes } from 'crypto'
 import clubeServiceInstance from '../services/clubeService'
 import { autenticacaoServiceInstance } from '../services/autenticacaoService'
-import { UsuarioAutenticado } from '../types/services'
+import { ClubeDadosPK, JwtEmailInvitePayload, JwtGuestRegistrationPayload, UsuarioAutenticado, UsuarioDadosPK } from '../types/services'
 import { StatusCodes } from '../types/enums'
 import { createBlobInContainer } from '../services/blogStorageService'
+import jwtServiceInstance from '../services/jwtService'
+import logger from '../logger'
+import { JwtPayload } from 'jsonwebtoken'
 
 const router = Router()
 router.use(autenticacaoServiceInstance.authenticate('session'))
 
 const _viewFolder = 'usuario'
 
-router.get('/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>, res) => {
-    try {
-        const { idUsuario } = req.params
-        const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
-        if (usuario) {
-            res.send(usuario)
-        } else {
-            res.status(StatusCodes.NOT_FOUND).send()
-        }
-    } catch (error) {
-        res.redirect(500, 'back')
-    }
-})
+router.get('/cadastro', async (req, res) => {
+    const tokenRegistroConvidado = req.query['registro-convidado']
+    let idClube = 0
+    let emailConvidado = ''
 
-router.get('/cadastro', (req, res) => {
+    if (tokenRegistroConvidado?.toString()) {
+
+        const resultadoValidacao = jwtServiceInstance.verify(tokenRegistroConvidado?.toString()) as JwtGuestRegistrationPayload
+        if (!resultadoValidacao.valid) {
+            res.status(401).redirect('/convite-expirado')
+            logger.error((resultadoValidacao as JwtPayload).error)
+            return
+        }
+
+
+        const payload = resultadoValidacao.payload
+        console.log(payload)
+        idClube = payload.clubeConvidante
+        emailConvidado = payload.emailConvidado
+
+        if (!idClube || !emailConvidado) {
+            res.status(400).json({ mensagem: 'Payload com dados incompletos' })
+            return
+        } else if (!(await clubeServiceInstance.buscaPorId(Number(idClube)))) {
+            res.status(404).redirect('/404')
+            return
+        }
+    }
+
     const opcoes = preencherOpcoesDeRender({
         titulo: 'Cadastro',
         diretorioBase: _viewFolder,
@@ -40,15 +56,66 @@ router.get('/cadastro', (req, res) => {
         layout: 'layoutHome'
     })
 
-    res.render(`${_viewFolder}/cadastro`, opcoes)
+    res.render(`${_viewFolder}/cadastro`, { ...opcoes, emailConvidado, idClube })
 })
 
-router.post('/cadastro', async (req: Request<null, null, RequestDadosOpcionaisDe<Usuario>>, res, next) => {
+router.get('/cadastro/convite', async (req, res, next) => {
+    const { token } = req.query
+
+    if (!token?.toString()) {
+        res.status(400).redirect('/404')
+        return
+    }
+
+    const resultadoValidacao = jwtServiceInstance.verify(token?.toString()) as JwtEmailInvitePayload
+    if (!resultadoValidacao.valid) {
+        res.status(401).redirect('/convite-expirado')
+        logger.error((resultadoValidacao as JwtPayload).error)
+        return
+    }
+
+    logger.info('Resultado da validação do token:')
+    logger.info(resultadoValidacao)
+    const {
+        idClube,
+        idUsuarioRemetente: idUsuario,
+        emailUsuarioRemetente: email,
+        emailConvidado
+    } = resultadoValidacao.payload
+    if (!idClube || !idUsuario || !email || !emailConvidado) {
+        res.status(400).json({ mensagem: 'Payload com dados incompletos' })
+        return
+    }
+
+    const usuario: UsuarioDadosPK = { idUsuario: Number(idUsuario), email }
+    const clube: ClubeDadosPK = { idClube: Number(idClube) }
+    const confirmacaoDadosConvite = await usuarioServiceInstance.verificarSeUsuarioEAdminDoClube(usuario, clube)
+    if (confirmacaoDadosConvite === true) {
+        const tokenRegistroConvidado = jwtServiceInstance.sign({ clubeConvidante: idClube, emailConvidado }, '900s') // expira em 15min
+        res.redirect(`/usuario/cadastro?registro-convidado=${tokenRegistroConvidado}`)
+        logger.info('Convite aceito - redirecionando para página de cadastro (falta adicionar header com um novo token para confirmar esta origem)')
+    } else {
+        res.redirect('/404')
+        logger.info('Alguma coisa errada com o convite')
+    }
+
+})
+
+
+router.post('/cadastro', async (req, res, next) => {
     try {
-        const dados = await validacaoServiceInstance.validarUsuarioDadosCriacao(req.body)
-        dados.imagem = randomBytes(2)
-        const usuario = await usuarioServiceInstance.criarUsuario(dados)
-        res.redirect(`${req.baseUrl}/${usuario.idUsuario}`)
+        console.log(req.body)
+        const { idClube, emailConvidado, nome, email, senha } = req.body
+        const dados = await validacaoServiceInstance.validarUsuarioDadosCriacao({ nome, email, senha } as Usuario)
+        let usuario
+        if (idClube && emailConvidado) {
+            if (emailConvidado !== dados.email)
+                throw new Error('Email fornecido é diferente daquele que recebeu o convite de ingresso no clube.')
+            usuario = await usuarioServiceInstance.criarUsuario(dados, idClube)
+        } else {
+            usuario = await usuarioServiceInstance.criarUsuario(dados)
+        }
+        res.redirect(`/login`)
     } catch (error) {
         const redirect = `${req.baseUrl}${req.path}`
         if (error instanceof Error && error.name === 'ValidationError') {
@@ -139,10 +206,10 @@ router.post('/editar/edicao-conteudo', async (req, res, next) => {
 
         if (blobUrl.length > 0)
             usuarioDadosAtualizados['imagemUrl'] = blobUrl
-        
-        res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
 
         usuarioServiceInstance.atualizarInformacaoDoPerfil(usuarioDadosAtualizados)
+
+        res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ info: 'falha ao atualizar dados' })
         next(error)

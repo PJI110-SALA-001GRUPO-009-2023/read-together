@@ -2,12 +2,21 @@ section#clube-info-overview {
     height: fit-content;
 }
 
-.card{
+div#enviando.hidden {
+    opacity: 0;
+    transition: opacity 0.9s;
+}
+
+div#enviando:not(.hidden) {
+    opacity: 1;
+}
+
+.card {
     padding: 20px;
     align-items: center;
 }
 
-.foto-perfil-clube {
+.overview-figure-clube {
     border-radius: 200px;
     width: 200px;
 }
