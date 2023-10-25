@@ -1,0 +1,32 @@
+<div class="container my-5">
+
+    <% for( let idx=0; idx < 4; idx++ ) { %>
+        <section class="row my-lg-4 my-md-0">
+            <% for( let idx=0; idx < 2; idx++ ) { %>
+                <article 
+                    class="col-lg-6 col-md-12
+                           d-flex 
+                           my-md-2"
+                >
+                    <figure>
+                        <div style="height: 280px; width: 200px; background-color: lightyellow"></div>
+                        <% /*<img src="https://picsum.photos/200/280" alt=""> */%>
+                    </figure>
+                    <div class="ms-3">
+                        <h3 class="book-title fs-4 mb-0">Título do livro</h3>
+                        <small class="book-date mt-0 mb-2 d-inline-block">Data de lançamento</small>
+                        <p class="book-sinopsis">
+                            <%- `${`Id sint quis dolor irure occaecat quis in duis officia esse consectetur officia commodo
+                                aliquip. Fugiat consequat fugiat consectetur et dolore excepteur officia enim est minim
+                                amet ullamco fugiat. Laborum dolore consequat do consectetur laborum mollit. Culpa
+                                aliquip voluptate ex incididunt in eu adipisicing ut tempor dolore excepteur ipsum.
+                                Incididunt aliquip laborum amet cillum consequat magna aliqua voluptate proident ex
+                                commodo culpa reprehenderit sit.`.substring(0, 160)}...` %>
+                        </p>
+                    </div>
+                </article>
+                <% } %>
+        </section>
+        <% } %>
+
+</div>

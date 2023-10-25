@@ -68,7 +68,10 @@ class LeituraManager {
      */
     criarListaDeLeituras(qtddParaMostrar) {
         let htmlString = ''
-        const leiturasDivididasPorPaginaKeys = Object.keys(localStorage).filter(val => val.includes(`${qtddParaMostrar}`)).sort()
+        const leiturasDivididasPorPaginaKeys = Object
+            .keys(localStorage)
+            .filter(val => val.includes(`${qtddParaMostrar}`))
+            .sort();
         const leiturasDestaPagina = JSON.parse(localStorage.getItem(`${leiturasDivididasPorPaginaKeys[0]}`))
 
         for (let { titulo, pagina } of leiturasDestaPagina) {
@@ -76,7 +79,7 @@ class LeituraManager {
         }
         this.container.innerHTML = htmlString
     }
-    
+
     /**
      * Inicializa o gerenciador de leituras.
      * @public
