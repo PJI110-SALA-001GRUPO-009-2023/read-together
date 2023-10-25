@@ -20,20 +20,6 @@ router.use(autenticacaoServiceInstance.authenticate('session'))
 
 const _viewFolder = 'usuario'
 
-// router.get('/:idUsuario(\\d+)', async (req: Request<UsuarioRequestParams>, res) => {
-//     try {
-//         const { idUsuario } = req.params
-//         const usuario = await usuarioServiceInstance.buscarUsuarioPorId({ idUsuario: Number(idUsuario) })
-//         if (usuario) {
-//             res.send(usuario)
-//         } else {
-//             res.status(StatusCodes.NOT_FOUND).send()
-//         }
-//     } catch (error) {
-//         res.redirect(500, 'back')
-//     }
-// })
-
 router.get('/cadastro', async (req, res) => {
     const tokenRegistroConvidado = req.query['registro-convidado']
     let idClube = 0
