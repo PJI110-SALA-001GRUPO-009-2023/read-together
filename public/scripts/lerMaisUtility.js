@@ -1,4 +1,4 @@
-export function adicionarToggleATodosOsBotoes() {
+function adicionarToggleATodosOsBotoes() {
     function estilizarBotao(button) {
         button.classList.add('naked-btn', 'small-text')
     }

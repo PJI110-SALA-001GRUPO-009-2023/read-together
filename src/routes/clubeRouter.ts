@@ -1,6 +1,7 @@
+import * as config from '../config'
+
 import { Clube } from '@prisma/client'
 import express, { Request, } from 'express'
-import { esPrismaErro } from '../prisma/prisma'
 import { autenticacaoServiceInstance } from '../services/autenticacaoService'
 import clubeServiceInstance from '../services/clubeService'
 import emailServiceInstance from '../services/emailService'
@@ -11,6 +12,8 @@ import { UsuarioAutenticado } from '../types/services'
 import { asyncSha1HexHash, preencherOpcoesDeRender } from '../utils'
 import { buscarCSS } from './utils/routesUtilities'
 import { createBlobInContainer } from '../services/blogStorageService'
+import { get } from 'http'
+import axios from 'axios'
 
 /**
  * Cuida de todas as rotas das funcionalidades pertinentes aos clubes
@@ -90,11 +93,11 @@ router.get('/:idClube(\\d+)', async (req: Request<RequestDadosDe<Pick<Clube, 'id
 router.post('/email', async (req, res) => {
     const { idClube, emailDestinatario } = req.body
     const { idUsuario, nome: nomeAdmin, email: emailAdmin } = req.user as UsuarioAutenticado
-    
+
     const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
         Number(idClube), Number(idUsuario)
     )
-    
+
     if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
         if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
             res.redirect('/404')
@@ -103,9 +106,9 @@ router.post('/email', async (req, res) => {
         }
         return
     }
-    
+
     const { admin, nome: nomeClube } = DTOValidacaoClubeERegistroEmClube[0]
-    
+
     if (!admin) {
         console.log('algo deu errado')
         res.json({ status: 'Nao Autorizado' })
@@ -119,18 +122,18 @@ router.post('/email', async (req, res) => {
                 Number(idUsuario),
                 emailAdmin || '',
                 `${req.protocol}://${req.headers.host}` || '')
-                res.json({ status: 'Em processo de envio' })
-            } catch (e) {
-                console.error(e)
-            }
+            res.json({ status: 'Em processo de envio' })
+        } catch (e) {
+            console.error(e)
         }
-    })
-    
-    router.post('/edicao-conteudo', async (req, res, next) => {
-        try {
+    }
+})
+
+router.post('/edicao-conteudo', async (req, res, next) => {
+    try {
         const { idUsuario } = req.user as UsuarioAutenticado
         const { id: idClube, base64, ...clubeDados } = req.body
-        
+
         if (!idUsuario) {
             res.redirect(StatusCodes.UNAUTHORIZED, '/login')
             return
@@ -138,7 +141,7 @@ router.post('/email', async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({ status: StatusCodes.BAD_REQUEST, mensagem: 'Não foram enviados para atualizar o clube' })
             return
         }
-        
+
         let blobUrl = ''
         if (base64) {
             const regex = /^data:(image\/.+);base64,(.+)$/
@@ -153,41 +156,41 @@ router.post('/email', async (req, res) => {
             idClube,
             ...clubeDados
         }
-        
+
         if (blobUrl.length > 0)
-        clubeDadosAtualizados['imagemUrl'] = blobUrl
-    
-    clubeServiceInstance.atualizarInformacaoDoClube(clubeDadosAtualizados, { idUsuario: idUsuario || 0 })
-    
-    
-    res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
-} catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ info: 'falha ao atualizar dados' })
-    next(error)
-}
+            clubeDadosAtualizados['imagemUrl'] = blobUrl
+
+        clubeServiceInstance.atualizarInformacaoDoClube(clubeDadosAtualizados, { idUsuario: idUsuario || 0 })
+
+
+        res.status(StatusCodes.OK).json({ info: 'atualização em andamento' })
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ info: 'falha ao atualizar dados' })
+        next(error)
+    }
 })
 
 router.get('/:idClube(\\d+)/reuniao/:idReuniao(\\d+)', async (req, res, next) => {
     try {
         const { idUsuario } = req.user as UsuarioAutenticado
         const { idClube } = req.params
-        
+
         const DTOValidacaoClubeERegistroEmClube = await clubeServiceInstance.obterDadosClubeRoleSeExistiremClubeUsuario(
             Number(idClube), Number(idUsuario)
-            )
+        )
 
-            if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
-                if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
-                    res.redirect('/404')
-                } else {
+        if (!Array.isArray(DTOValidacaoClubeERegistroEmClube)) {
+            if (DTOValidacaoClubeERegistroEmClube === DadosClubeERoleValidacaoCodes.CLUBE_NAO_EXISTE) {
+                res.redirect('/404')
+            } else {
                 res.redirect(StatusCodes.UNAUTHORIZED, 'back')
             }
             return
         }
-        
+
         const { nome, subtitulo } = DTOValidacaoClubeERegistroEmClube[0]
         const hash = await asyncSha1HexHash(nome.concat(idClube))
-        
+
         const options = preencherOpcoesDeRender({
             titulo: 'Reuniao - Leitura do Mês',
             diretorioBase: _dirBase,
@@ -199,33 +202,23 @@ router.get('/:idClube(\\d+)/reuniao/:idReuniao(\\d+)', async (req, res, next) =>
     }
 })
 
-router.get('/leitura/:idLeitura(\\d+)', (req, res) => {
+router.get('/:idClube(\\d+)/leitura/:idLeitura(\\d+)', (req, res) => {
     const options = preencherOpcoesDeRender({
-        titulo: 'Leituras passadas',
+        titulo: 'Leitura',
         diretorioBase: _dirBase,
         cssCustomizados: buscarCSS('leitura', _dirBase)
     })
 
-    res.render('clube/leitura', { ...options })
+    res.render('clube/leitura', { ...options, leituraData: {id: req.params.idLeitura} })
 })
 
 router.get('/leituras', (req, res) => {
+    const { clubeId } = req.query
+
     res.send([
-        { titulo: 'The Bald King\'s Braids', pagina: '/clube/leitura/1' },
-        { titulo: 'The Jumbo Ant', pagina: '/clube/leitura/2' },
-        { titulo: 'The Laughing Tear', pagina: '/clube/leitura/3' },
-        { titulo: 'The Whispering Thunder', pagina: '/clube/leitura/4' },
-        { titulo: 'The Midnight Sun', pagina: '/clube/leitura/5' },
-        { titulo: 'The Frozen Flame', pagina: '/clube/leitura/6' },
-        { titulo: 'The Silent Symphony', pagina: '/clube/leitura/7' },
-        { titulo: 'The Blind Seer', pagina: '/clube/leitura/8' },
-        { titulo: 'The Paper Steel', pagina: '/clube/leitura/9' },
-        { titulo: 'The Still Chaos', pagina: '/clube/leitura/10' },
-        { titulo: 'The Invisible Spotlight', pagina: '/clube/leitura/11' },
-        { titulo: 'The Lost Found', pagina: '/clube/leitura/12' },
-        { titulo: 'The Rising Abyss', pagina: '/clube/leitura/13' },
-        { titulo: 'The Timeless Clock', pagina: '/clube/leitura/14' },
-        { titulo: 'The Colorless Rainbow', pagina: '/clube/leitura/15' }
+        { titulo: 'Harry Potter e a pedra filosofal', pagina: `/clube/${clubeId}/leitura/1` },
+        { titulo: 'Estranhos', pagina: `/clube/${clubeId}/leitura/2` },
+        { titulo: 'Admirável mundo novo', pagina: `/clube/${clubeId}/leitura/3` },
     ])
 })
 
@@ -237,6 +230,48 @@ router.get('/:idClube(\\d+)/acervo', (req, res) => {
     })
 
     res.render('clube/acervo', { ...options })
+})
+
+router.post('/:idClube(\\d+)/acervo/search', async (req, res) => {
+    const { searchTerms, id } = req.body
+    const apiKey = config.GOOGLE_BOOKS_API
+    const apiUrl = new URL('https://www.googleapis.com/books/v1/volumes')
+
+
+    const idMapper = new Map([
+        ['1', 'DqvrPgAACAAJ'], // Harry Potter e a pedra filosofal
+        ['2', '2_yOPwAACAAJ'], // Strangers/Estranhos, de Dean Koontz
+        ['3', 'FfX-AgAAQBAJ'] // Admirável mundo novo
+    ])
+
+    if (id) {
+        const idStr = String(id)
+        const BookIdForGoogle = idMapper.get(idStr)
+        apiUrl.pathname += `/${BookIdForGoogle}`
+    } else if (searchTerms) {
+        apiUrl.searchParams.set('key', apiKey)
+        apiUrl.searchParams.set('q', searchTerms)
+        apiUrl.searchParams.set('startIndex', '0')
+        apiUrl.searchParams.set('maxResults', '40')
+        apiUrl.searchParams.set('projection', 'full')
+        apiUrl.searchParams.set('filter', 'partial')
+        apiUrl.searchParams.set('langRestrict', 'pt-BR')
+        apiUrl.searchParams.set('projection', 'full')
+    }
+
+    const apiUrlAsString = apiUrl.toString()
+    try {
+        const apiReponse = await axios.get(apiUrlAsString)
+        if (apiReponse.status !== 200) {
+            res.json({ error: 'request mal-suscedido' })
+            return
+        }
+        res.json(apiReponse.data)
+        
+    } catch (error) {
+        res.json(error)
+    }
+
 })
 
 export default router

@@ -1,32 +1,59 @@
 <div class="container my-5">
+    <form id="acervo-search" class="d-flex justify-content-center" action="acervo/search">
+        <div class="input-group mb-3 w-50">
+            <input type="text" class="form-control" placeholder="" name="termos-pesquisa"
+                aria-label="Example text with button addon" aria-describedby="acervo-search-btn">
+            <button class="btn btn-outline-secondary btn-lilas" type="button" id="acervo-search-btn">
+                Pesquisar
+            </button>
+        </div>
+    </form>
 
-    <% for( let idx=0; idx < 4; idx++ ) { %>
-        <section class="row my-lg-4 my-md-0">
-            <% for( let idx=0; idx < 2; idx++ ) { %>
-                <article 
-                    class="col-lg-6 col-md-12
-                           d-flex 
-                           my-md-2"
-                >
-                    <figure>
-                        <div style="height: 280px; width: 200px; background-color: lightyellow"></div>
-                        <% /*<img src="https://picsum.photos/200/280" alt=""> */%>
-                    </figure>
-                    <div class="ms-3">
-                        <h3 class="book-title fs-4 mb-0">Título do livro</h3>
-                        <small class="book-date mt-0 mb-2 d-inline-block">Data de lançamento</small>
-                        <p class="book-sinopsis">
-                            <%- `${`Id sint quis dolor irure occaecat quis in duis officia esse consectetur officia commodo
-                                aliquip. Fugiat consequat fugiat consectetur et dolore excepteur officia enim est minim
-                                amet ullamco fugiat. Laborum dolore consequat do consectetur laborum mollit. Culpa
-                                aliquip voluptate ex incididunt in eu adipisicing ut tempor dolore excepteur ipsum.
-                                Incididunt aliquip laborum amet cillum consequat magna aliqua voluptate proident ex
-                                commodo culpa reprehenderit sit.`.substring(0, 160)}...` %>
-                        </p>
-                    </div>
-                </article>
-                <% } %>
-        </section>
-        <% } %>
+    <section id="results" class="row my-lg-4 my-md-0">
 
+    </section>
+
+    <div id="search-pagination">
+        <ul class="pagination justify-content-center border-none">
+
+        </ul>
+    </div>
 </div>
+
+<div class="modal fade" id="viewerModal" tabindex="-1" aria-labelledby="viewerModalLabel" aria-hidden="true"
+    style="display: none;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div id="modal-conteudo" class="modal-content">
+            <div class="modal-header">
+                <h6></h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="viewerCanvas" class="modal-body m-auto" style="height: 600px; width: 700px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('#search-pagination').style.display = 'none'
+</script>
+<script src="/scripts/booksClient.js"></script>
+<script>
+    document.querySelector('form#acervo-search').addEventListener('submit', (e) => {
+        e.preventDefault()
+        search()
+    })
+
+    document.querySelector('#acervo-search button').addEventListener('click', search)
+
+</script>
+<script type="text/javascript" src="https://www.google.com/books/jsapi.js"></script>
+<script type="text/javascript">
+    google.books.load();
+
+    function initializeViewer(title, isbn) {
+        var viewer = new google.books.DefaultViewer(document.getElementById('viewerCanvas'));
+        viewer.load(`ISBN:${isbn}`);
+        document.querySelector('#viewerModal h6').textContent = title
+    }
+</script>

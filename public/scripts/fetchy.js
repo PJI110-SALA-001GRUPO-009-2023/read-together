@@ -1,8 +1,8 @@
 export default class Fetchy {
-    url = '';
+    url = ''
 
     constructor(baseUrl = null) {
-        this.url = baseUrl;
+        this.url = baseUrl
     }
 
     /**
@@ -11,8 +11,8 @@ export default class Fetchy {
     * @returns {Promise<Response>}
     */
     async get(url) {
-        const response = await fetch(url ?? this.baseUrl);
-        return response;
+        const response = await fetch(url ?? this.baseUrl)
+        return response
     }
 
     /**
@@ -22,7 +22,7 @@ export default class Fetchy {
     * @returns {Promise<Response>}
  */
     async post(url, body) {
-        return this.#sendRequest('POST', url, body);
+        return this.#sendRequest('POST', url, body)
     }
 
     /**
@@ -32,7 +32,7 @@ export default class Fetchy {
      * @returns {Promise<Response>}
      */
     async put(url, body) {
-        return this.#sendRequest('PUT', url, body);
+        return this.#sendRequest('PUT', url, body)
     }
 
     /**
@@ -44,14 +44,14 @@ export default class Fetchy {
      * @returns {Promise<Response>}
      */
     async #sendRequest(method, body, url = null) {
-        const headers = { 'Content-Type': 'application/json' };
+        const headers = { 'Content-Type': 'application/json' }
 
         const response = await fetch(url ?? this.baseUrl, {
             method: method,
             headers: headers,
             body: JSON.stringify(body),
-        });
+        })
 
-        return response;
+        return response
     }
 }

@@ -1,5 +1,3 @@
-import { adicionarToggleATodosOsBotoes } from './lerMaisUtility.js'
-
 const btnEdicao = document.querySelector('button#btn-edicao:has(i.gear-icon)')
 const btnCancelar = document.querySelector('button#btn-edicao-cancelar')
 const btnSalvar = document.querySelector('button#btn-edicao-salvar')
