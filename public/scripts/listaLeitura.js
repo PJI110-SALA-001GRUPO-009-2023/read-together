@@ -86,14 +86,14 @@ class LeituraManager {
      * Inicializa o gerenciador de leituras.
      * @public
      */
-    init() {
+    async init() {
         this.selectElement.addEventListener('change', (e) => {
             this.qtddSelecionada = e.target.children[e.target.selectedIndex].value
             this.criarListaDeLeituras(this.qtddSelecionada)
         })
 
         this.qtddSelecionada = this.selectElement.children[this.selectElement.selectedIndex].value
-        this.construirOArmazenamentoDeLeituras()
+        await this.construirOArmazenamentoDeLeituras()
         this.criarListaDeLeituras(this.qtddSelecionada)
     }
 }

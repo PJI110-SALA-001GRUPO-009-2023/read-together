@@ -209,7 +209,7 @@ router.get('/:idClube(\\d+)/leitura/:idLeitura(\\d+)', (req, res) => {
         cssCustomizados: buscarCSS('leitura', _dirBase)
     })
 
-    res.render('clube/leitura', { ...options, leituraData: {id: req.params.idLeitura} })
+    res.render('clube/leitura', { ...options, leituraData: {id: req.params.idLeitura, idClube: req.params.idClube} })
 })
 
 router.get('/leituras', (req, res) => {
@@ -229,7 +229,7 @@ router.get('/:idClube(\\d+)/acervo', (req, res) => {
         cssCustomizados: buscarCSS('acervo', _dirBase)
     })
 
-    res.render('clube/acervo', { ...options })
+    res.render('clube/acervo', { ...options, idClube: req.params.idClube })
 })
 
 router.post('/:idClube(\\d+)/acervo/search', async (req, res) => {
