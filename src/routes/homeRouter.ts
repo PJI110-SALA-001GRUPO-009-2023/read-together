@@ -10,6 +10,10 @@ const router = express.Router()
 
 
 router.get('/', (req, res) => {
+    if (req.user) {
+        const usuario = req.user as UsuarioAutenticado
+        res.redirect('/usuario/editar/' + usuario.idUsuario)
+    }
     const opcoes = preencherOpcoesDeRender({ cssCustomizados: buscarCSS('index', ''), layout: 'layoutHome' })
     res.render('index', opcoes)
 })

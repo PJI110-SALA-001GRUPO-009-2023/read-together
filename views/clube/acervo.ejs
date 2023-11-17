@@ -1,0 +1,62 @@
+<div class="m-3">
+    <a href="/clube/<%-idClube%>">Voltar para Meu Clube</a>
+</div>
+<div class="container my-5">
+    <form id="acervo-search" class="d-flex justify-content-center" action="acervo/search">
+        <div class="input-group mb-3 w-50">
+            <input type="text" class="form-control" placeholder="" name="termos-pesquisa"
+                aria-label="Example text with button addon" aria-describedby="acervo-search-btn">
+            <button class="btn btn-outline-secondary btn-lilas" type="button" id="acervo-search-btn">
+                Pesquisar
+            </button>
+        </div>
+    </form>
+
+    <section id="results" class="row my-lg-4 my-md-0">
+
+    </section>
+
+    <div id="search-pagination">
+        <ul class="pagination justify-content-center border-none">
+
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="viewerModal" tabindex="-1" aria-labelledby="viewerModalLabel" aria-hidden="true"
+    style="display: none;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div id="modal-conteudo" class="modal-content">
+            <div class="modal-header">
+                <h6></h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="viewerCanvas" class="modal-body m-auto" style="height: 600px; width: 700px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('#search-pagination').style.display = 'none'
+</script>
+<script src="/scripts/booksClient.js"></script>
+<script>
+    document.querySelector('form#acervo-search').addEventListener('submit', (e) => {
+        e.preventDefault()
+        search()
+    })
+
+    document.querySelector('#acervo-search button').addEventListener('click', search)
+
+</script>
+<script type="text/javascript" src="https://www.google.com/books/jsapi.js"></script>
+<script type="text/javascript">
+    google.books.load();
+
+    function initializeViewer(title, isbn) {
+        var viewer = new google.books.DefaultViewer(document.getElementById('viewerCanvas'));
+        viewer.load(`ISBN:${isbn}`);
+        document.querySelector('#viewerModal h6').textContent = title
+    }
+</script>

@@ -194,3 +194,9 @@ nav img#logo {
     text-align: center;
     transition: color .2s ease-in-out;
 }
+
+figure.search-result-item-cover:hover {
+    scale: 1.025;
+    cursor: pointer;
+    opacity: 0.75;
+}

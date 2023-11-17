@@ -1,0 +1,202 @@
+<div class="m-3">
+    <a href="/clube/<%-leituraData.idClube%>">Voltar para Meu Clube</a>
+</div>
+<article class="container mt-5" style="width: 60%;">
+    <section id="book-summary" class="card" data-leitura_id="<%-leituraData.id%>" style="border: 1px solid #675fff">
+        <figure class="card-img-top d-flex align-items-center justify-content-center mb-0 mt-4">
+            <!-- img -->
+        </figure>
+        <div id="info" class="card-body">
+            <h3 id="title" class="card-title">
+                <!-- title -->
+            </h3>
+            <h6 id="authors" class="card-subtitle mb-1">
+                <!-- authors -->
+            </h6>
+            <small class=" d-block">Publicado em </small>
+            <small style="font-size: 0.75rem" class="mb-1 d-block">ISBN-10: </small>
+            <p id="description" class="card-text text-truncate can-edit mb-1" aria-expanded="false">
+                <!-- descricao -->
+            </p>
+            <button id="clube-ler-mais-btn" class="d-block btn-link btn-ler-mais">« Ler mais »</button>
+        </div>
+    </section>
+    <section id="discussions">
+        <!-- comments -->
+    </section>
+</article>
+
+<script src="/scripts/lerMaisUtility.js"></script>
+<script>
+    /**
+ * Represents a book volume.
+ *
+ * @typedef {Object} BookVolume
+ * @property {string} kind - The type of volume (e.g., "books#volume").
+ * @property {string} id - The unique identifier of the book.
+ * @property {string} etag - The entity tag for the volume.
+ * @property {string} selfLink - The link to the book's information.
+ * @property {Object} volumeInfo - Information about the volume.
+ * @property {string} volumeInfo.title - The title of the book.
+ * @property {string[]} volumeInfo.authors - The authors of the book.
+ * @property {string} volumeInfo.publisher - The publisher of the book.
+ * @property {string} volumeInfo.publishedDate - The published date of the book.
+ * @property {string} volumeInfo.description - The description of the book.
+ * @property {Object[]} volumeInfo.industryIdentifiers - Identifiers like ISBNs.
+ * @property {string} volumeInfo.industryIdentifiers[].type - The type of identifier (e.g., "ISBN_10").
+ * @property {string} volumeInfo.industryIdentifiers[].identifier - The actual identifier.
+ * @property {Object} volumeInfo.readingModes - Reading modes availability.
+ * @property {boolean} volumeInfo.readingModes.text - Indicates if text reading mode is available.
+ * @property {boolean} volumeInfo.readingModes.image - Indicates if image reading mode is available.
+ * @property {number} volumeInfo.pageCount - The total number of pages in the book.
+ * @property {number} volumeInfo.printedPageCount - The printed number of pages in the book.
+ * @property {Object} volumeInfo.dimensions - The dimensions of the book.
+ * @property {string} volumeInfo.dimensions.height - The height of the book.
+ * @property {string} volumeInfo.dimensions.width - The width of the book.
+ * @property {string} volumeInfo.dimensions.thickness - The thickness of the book.
+ * @property {string} volumeInfo.printType - The type of print (e.g., "BOOK").
+ * @property {string[]} volumeInfo.categories - Categories associated with the book.
+ * @property {number} volumeInfo.averageRating - The average rating of the book.
+ * @property {number} volumeInfo.ratingsCount - The number of ratings the book has received.
+ * @property {string} volumeInfo.maturityRating - The maturity rating of the book.
+ * @property {boolean} volumeInfo.allowAnonLogging - Indicates if anonymous logging is allowed.
+ * @property {string} volumeInfo.contentVersion - The content version of the book.
+ * @property {Object} volumeInfo.panelizationSummary - Summary of panelization information.
+ * @property {boolean} volumeInfo.panelizationSummary.containsEpubBubbles - Indicates if EPUB bubbles are present.
+ * @property {boolean} volumeInfo.panelizationSummary.containsImageBubbles - Indicates if image bubbles are present.
+ * @property {Object} volumeInfo.imageLinks - Links to book cover images.
+ * @property {string} volumeInfo.imageLinks.smallThumbnail - The link to the small thumbnail image.
+ * @property {string} volumeInfo.imageLinks.thumbnail - The link to the thumbnail image.
+ * @property {string} volumeInfo.language - The language of the book.
+ * @property {string} volumeInfo.previewLink - The link for previewing the book.
+ * @property {string} volumeInfo.infoLink - The link to additional information about the book.
+ * @property {string} volumeInfo.canonicalVolumeLink - The canonical link to the book.
+ * @property {Object} saleInfo - Information about the sale of the book.
+ * @property {string} saleInfo.country - The country where the book is sold.
+ * @property {string} saleInfo.saleability - The saleability status of the book.
+ * @property {boolean} saleInfo.isEbook - Indicates if the book is available as an ebook.
+ * @property {Object} accessInfo - Information about accessing the book.
+ * @property {string} accessInfo.country - The country where the book can be accessed.
+ * @property {string} accessInfo.viewability - The viewability status of the book.
+ * @property {boolean} accessInfo.embeddable - Indicates if the book can be embedded.
+ * @property {boolean} accessInfo.publicDomain - Indicates if the book is in the public domain.
+ * @property {string} accessInfo.textToSpeechPermission - Permission for text-to-speech.
+ * @property {Object} accessInfo.epub - Information about the availability of the book in EPUB format.
+ * @property {boolean} accessInfo.epub.isAvailable - Indicates if the book is available in EPUB format.
+ * @property {Object} accessInfo.pdf - Information about the availability of the book in PDF format.
+ * @property {boolean} accessInfo.pdf.isAvailable - Indicates if the book is available in PDF format.
+ * @property {string} accessInfo.webReaderLink - The link for reading the book online.
+ * @property {string} accessInfo.accessViewStatus - The access view status of the book.
+ * @property {boolean} accessInfo.quoteSharingAllowed - Indicates if sharing quotes from the book is allowed.
+ */
+
+
+    (async () => {
+        const leituraId = document.querySelector("#book-summary").dataset.leitura_id
+        const body = JSON.stringify({ id: leituraId })
+        const headers = { 'Content-Type': 'application/json' }
+
+        try {
+            const response = await fetch('../acervo/search', { method: 'POST', headers: headers, body: body });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Status Code ${response.status}: ${response.statusText}`);
+            }
+
+
+            const jsonResponse = await response.json();
+            populateTemplateWithBookData(jsonResponse)
+            populateTemplateWithDiscussions()
+        } catch (error) {
+            console.error(error);
+        }
+
+    })()
+
+    function getISBN(volumeInfo) {
+        let keys = Object.keys(volumeInfo)
+        let hasIndustryIdentifiers = keys.indexOf('industryIdentifiers')
+        if (!(hasIndustryIdentifiers > 0)) {
+            return
+        }
+
+        const isbn = volumeInfo.industryIdentifiers.filter(x => x.type === 'ISBN_10')
+        if (!(isbn.length > 0)) {
+            return
+        }
+
+        return isbn[0].identifier
+    }
+
+    function populateTemplateWithBookData(/** @type {BookVolume} */ data) {
+        const volumeInfo = data.volumeInfo
+        const basicInformation = {
+            id: data.id,
+            title: volumeInfo.title !== 'Strangers' ? volumeInfo.title : 'Estranhos',
+            pubDate: new Date(volumeInfo.publishedDate).toLocaleDateString('pt-BR'),
+            authors: volumeInfo.authors.join(' ').substring(0, 40),
+            image: volumeInfo.imageLinks?.thumbnail,
+            description: volumeInfo.title !== 'Strangers' ? volumeInfo.description : `<b>"A trama se revira engenhosamente... um livro envolvente e muitas vezes arrepiante."</b> - The New York Times Book Review<br><br>
+            Um escritor na Califórnia. Um médico em Boston. Proprietário de um motel e seu funcionário em Nevada. Um padre em Chicago. Um ladrão em Nova York. Uma garotinha em Las Vegas. Eles são um punhado de pessoas de todo o país, vivendo variações misteriosas do mesmo pesadelo.
+            <br><br>Uma memória sombria os chama. E em breve eles estarão juntos, no coração de um extenso deserto, onde a terrível verdade os aguarda...`,
+            isbn: getISBN(volumeInfo)
+        }
+
+        const bookSummary = document.querySelector("#book-summary")
+        bookSummary.querySelector("figure").innerHTML += `
+            <img src="${basicInformation.image}"
+                style="width: 35%"
+            />`
+
+        bookSummary.querySelector("#title").innerHTML += basicInformation.title
+        bookSummary.querySelector("#authors").innerHTML += basicInformation.authors
+        bookSummary.querySelector("#description").innerHTML += basicInformation.description
+        bookSummary.querySelectorAll("#info small")[0].innerHTML += basicInformation.pubDate
+        bookSummary.querySelectorAll("#info small")[1].innerHTML += basicInformation.isbn
+    }
+
+    function populateTemplateWithDiscussions() {
+        const d = document.querySelector("#discussions")
+
+        const data = [
+            [
+                { name: 'Gabriel', comment: 'Absolutamente encantador! J.K. Rowling criou um mundo mágico cheio de surpresas e personagens cativantes.', publishedDateTime: '22/10/23 12:45' },
+                { name: 'Camila', comment: 'Adorei a jornada de Harry e seus amigos! A Pedra Filosofal é só o começo de uma incrível saga.', publishedDateTime: '24/10/23 15:20' },
+                { name: 'Ricardo', comment: 'A magia da descoberta e da amizade permeia esta história. Uma introdução brilhante ao universo mágico de Hogwarts.', publishedDateTime: '26/10/23 17:10' },
+                { name: 'Fernanda', comment: 'Não entendo tanto entusiasmo. Parece infantil demais para mim. Prefiro histórias mais sombrias.', publishedDateTime: '28/10/23 10:55' }
+            ],
+            [
+                { name: 'Lucas', comment: 'Intrigante! Dean Koontz mistura suspense e sobrenatural de maneira brilhante. Não conseguia largar o livro!', publishedDateTime: '23/10/23 11:15' },
+                { name: 'Juliana', comment: 'Um thriller psicológico envolvente. Cada página revela novos mistérios, mantendo-me ansiosa até o final.', publishedDateTime: '25/10/23 14:30' },
+                { name: 'Mariana', comment: 'Estranhos é um daqueles livros que te fazem questionar a realidade. Koontz cria uma atmosfera arrepiante e fascinante.', publishedDateTime: '27/10/23 16:45' },
+                { name: 'Felipe', comment: 'Não foi exatamente o meu estilo. A trama ficou um pouco confusa para mim, e o final deixou a desejar.', publishedDateTime: '29/10/23 09:00' }
+            ],
+            [
+                { name: 'Amanda', comment: 'Fascinante! A visão profética de Huxley sobre o controle totalitário e os riscos da tecnologia é assustadoramente relevante nos dias de hoje.', publishedDateTime: '25/10/23 10:30' },
+                { name: 'Carlos', comment: 'Não gostei muito. Achei a trama pessimista demais e os personagens superficiais. Preferiria algo mais otimista.', publishedDateTime: '25/10/23 14:15' },
+                { name: 'Isabela', comment: 'Um clássico intemporal! Huxley mergulha nas complexidades da natureza humana, provocando reflexões sobre liberdade e conformidade.', publishedDateTime: '26/10/23 18:20' },
+                { name: 'Ricardo', comment: 'Interessante, mas um pouco exagerado. A sociedade retratada parece distante da realidade. Huxley foi longe demais na conjectura futurista.', publishedDateTime: '27/10/23 09:45' }
+            ],
+
+        ];
+        
+        const leituraId = document.querySelector("#book-summary").dataset.leitura_id
+        data[leituraId - 1].forEach((c, idx) => {
+            d.innerHTML += `
+            <div class="w-100 card discussion-post my-4 px-3" style="border: 1px solid #675fff">
+                <div class="d-flex mt-2">
+                    <figure class="m-0 me-2">
+                        <img src="https://picsum.photos/40?random=${idx + 1}" style="border-radius: 50%">
+                    </figure>
+                    <span class="align-self-center vertical-align-center">${c.name} <small style="font-size: .75rem;opacity: 0.75;font-weight: 400;">${c.publishedDateTime}</small></span>
+                </div>
+                <div class="my-2">
+                    <p class="m-0 text-break">
+                        ${c.comment}
+                    </p>
+                </div>
+            </div>`
+        })
+    }
+
+</script>

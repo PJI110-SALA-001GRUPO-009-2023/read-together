@@ -1,4 +1,4 @@
-import { Clube, MembroDoClube, Prisma, PrismaClient, StatusEspera, Usuario } from '@prisma/client'
+import { Clube, Prisma, PrismaClient, Usuario } from '@prisma/client'
 import prismaInstance from '../prisma/prisma'
 import { ClubeDadosPK, UsuarioDadosPK } from '../types/services'
 import { RoleEnum, DadosClubeERoleValidacaoInfo, DadosClubeERoleValidacaoCodes } from '../types/enums'
